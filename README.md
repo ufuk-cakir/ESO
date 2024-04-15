@@ -1,10 +1,10 @@
-# Welcome to ESO: Evolutionary Spectrogram Optimisation
 
+# Welcome to ESO: Evolutionary Spectrogram Optimisation
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/ufuk-cakir/ESO/ci.yml?branch=main)](https://github.com/ufuk-cakir/ESO/actions/workflows/ci.yml)
 [![Documentation Status](https://readthedocs.org/projects/ESO/badge/)](https://ESO.readthedocs.io/)
 [![codecov](https://codecov.io/gh/ufuk-cakir/ESO/branch/main/graph/badge.svg)](https://codecov.io/gh/ufuk-cakir/ESO)
-
+![](https://cakir-ufuk.de/assets/images/eso%20logo.png)
 ## Installation
 
 The Python package `ESO` can be installed from PyPI:
