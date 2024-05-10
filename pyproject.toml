@@ -12,14 +12,14 @@ build-backend = "setuptools.build_meta"
 # a variety of build tools. Notably, the version specified here is the
 # single source of truth for ESO's version
 [project]
-name = "ESO"
-description = "Add short description here"
+name = "eso"
+description = "Evolutionary Spectrogram Optimization"
 readme = "README.md"
 maintainers = [
-    { name = "Ufuk Çakır", email = "your@email.com" },
+    { name = "Ufuk Çakır", email = "mail@cakir-ufuk.de" },
 ]
 dynamic = ["version"]
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 license = { text = "MIT" }
 classifiers = [
     "Programming Language :: Python :: 3",
@@ -27,6 +27,14 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
 ]
 dependencies = [
+  "requests",
+  "matplotlib",
+  "librosa",
+  "numpy",
+  "pandas",
+  "yattag",
+  "tensorboard",
+  "tqdm",
 ]
 
 [project.optional-dependencies]
@@ -65,5 +73,5 @@ write_to = "ESO/_version.py"
 [tool.pytest.ini_options]
 testpaths = [
     "tests",
-    "notebooks",
+    # "notebooks",
 ]

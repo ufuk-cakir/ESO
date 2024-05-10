@@ -3,12 +3,17 @@
 </p>
 
 # Welcome to ESO: Evolutionary Spectrogram Optimisation
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/ufuk-cakir/ESO/ci.yml?branch=main)](https://github.com/ufuk-cakir/ESO/actions/workflows/ci.yml)
 [![Documentation Status](https://readthedocs.org/projects/ESO/badge/)](https://ESO.readthedocs.io/)
 [![codecov](https://codecov.io/gh/ufuk-cakir/ESO/branch/main/graph/badge.svg)](https://codecov.io/gh/ufuk-cakir/ESO)
 
 ## Installation
+
+### Dependencies
+
+We assume you have a working installtion of pytorch on your machine. Check the [torch website](https://pytorch.org/get-started/locally/) for installation instructions.
 
 The Python package `ESO` can be installed from PyPI:
 
