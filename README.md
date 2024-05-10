@@ -8,6 +8,11 @@
 [![Documentation Status](https://readthedocs.org/projects/ESO/badge/)](https://ESO.readthedocs.io/)
 [![codecov](https://codecov.io/gh/ufuk-cakir/ESO/branch/main/graph/badge.svg)](https://codecov.io/gh/ufuk-cakir/ESO)
 
+
+# Note
+> :warning: **The main branch is currently under construction. We will add proper unit testing soon. Check the [develop branch](https://github.com/ufuk-cakir/ESO/tree/develop) for an experimental API.**
+
+
 ## Installation
 
 The Python package `ESO` can be installed from PyPI:
