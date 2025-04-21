@@ -1,9 +1,9 @@
-User API
-========
+API Reference
+=============
 
 .. toctree::
+  :maxdepth: 2
 
-This is an example function:
-
-.. automodule:: eso
-    :members:
+  api/eso
+  api/eso.utils
+  api/eso.model

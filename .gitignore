@@ -139,3 +139,11 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+
+
+
+
+
+*.html
+
+*/_build/

@@ -5,23 +5,29 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 
 
+import os
+import sys
+
+# Add project root to path
+sys.path.insert(0, os.path.abspath(".."))
+
+print("sys.path", sys.path)
 # -- Project information -----------------------------------------------------
 
 project = "eso"
 copyright = "2024, Ufuk Çakır"
 author = "Ufuk Çakır"
-
+nbsphinx_execute = "never"
 # -- General configuration ---------------------------------------------------
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    "nbsphinx",
     "nbsphinx_link",
     "sphinx_mdinclude",
     "sphinx.ext.autodoc",
-    "sphinx_rtd_theme",
+    "sphinx.ext.autosummary",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -34,10 +40,22 @@ exclude_patterns = []
 
 # -- Options for HTML output -------------------------------------------------
 
+# conf.py
+
+autosummary_generate = True
+autodoc_default_options = {
+    "members": True,
+    "undoc-members": True,
+    "show-inheritance": True,
+}
+
+# Make Sphinx warn on everything it can’t resolve
+nitpicky = True
+keep_warnings = True
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = "sphinx_rtd_theme"
+html_theme = "pydata_sphinx_theme"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
