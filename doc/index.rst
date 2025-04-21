@@ -1,4 +1,4 @@
-ESO: Evolutionary Spectrogram Optimisation
+eso: Evolutionary Spectrogram Optimisation
 ==========================================
 
 .. toctree::

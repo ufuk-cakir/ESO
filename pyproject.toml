@@ -10,7 +10,7 @@ build-backend = "setuptools.build_meta"
 
 # This section provides general project metadata that is used across
 # a variety of build tools. Notably, the version specified here is the
-# single source of truth for ESO's version
+# single source of truth for eso's version
 [project]
 name = "eso"
 description = "Add short description here"
@@ -72,7 +72,7 @@ packages = [
 [tool.setuptools_scm]
 version_scheme = "post-release"
 local_scheme = "node-and-date"
-write_to = "ESO/_version.py"
+write_to = "eso/_version.py"
 
 # The following is the configuration for the pytest test suite
 [tool.pytest.ini_options]

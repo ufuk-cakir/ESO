@@ -2,33 +2,33 @@
   <img src="https://cakir-ufuk.de/assets/images/eso%20logo.png" />
 </p>
 
-# Welcome to ESO: Evolutionary Spectrogram Optimisation
+# Welcome to eso: Evolutionary Spectrogram Optimisation
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/ufuk-cakir/ESO/ci.yml?branch=main)](https://github.com/ufuk-cakir/ESO/actions/workflows/ci.yml)
-[![Documentation Status](https://readthedocs.org/projects/ESO/badge/)](https://ESO.readthedocs.io/)
-[![codecov](https://codecov.io/gh/ufuk-cakir/ESO/branch/main/graph/badge.svg)](https://codecov.io/gh/ufuk-cakir/ESO)
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/ufuk-cakir/eso/ci.yml?branch=main)](https://github.com/ufuk-cakir/eso/actions/workflows/ci.yml)
+[![Documentation Status](https://readthedocs.org/projects/eso/badge/)](https://eso.readthedocs.io/)
+[![codecov](https://codecov.io/gh/ufuk-cakir/eso/branch/main/graph/badge.svg)](https://codecov.io/gh/ufuk-cakir/eso)
 
 
 # Note
-> :warning: **The main branch is currently under construction. We will add proper unit testing soon. Check the [develop branch](https://github.com/ufuk-cakir/ESO/tree/develop) for an experimental API.**
+> :warning: **The main branch is currently under construction. We will add proper unit testing soon. Check the [develop branch](https://github.com/ufuk-cakir/eso/tree/develop) for an experimental API.**
 
 
 ## Installation
 
-The Python package `ESO` can be installed from PyPI:
+The Python package `eso` can be installed from PyPI:
 
 ```
-python -m pip install ESO
+python -m pip install eso
 ```
 
 ## Development installation
 
-If you want to contribute to the development of `ESO`, we recommend
+If you want to contribute to the development of `eso`, we recommend
 the following editable installation from this repository:
 
 ```
-git clone https://github.com/ufuk-cakir/ESO
-cd ESO
+git clone https://github.com/ufuk-cakir/eso
+cd eso
 python -m pip install --editable .[tests]
 ```
 

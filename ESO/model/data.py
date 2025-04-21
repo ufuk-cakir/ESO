@@ -7,7 +7,7 @@ from pathlib import Path
 
 
 class Data:
-    """Class for handling the data. This class will be used by the ESO class.
+    """Class for handling the data. This class will be used by the eso class.
 
     It initializes the preprocessing class and handles the creation of the
     dataset based on the preprocessing settings.

@@ -5,5 +5,5 @@ User API
 
 This is an example function:
 
-.. automodule:: ESO
+.. automodule:: eso
     :members:

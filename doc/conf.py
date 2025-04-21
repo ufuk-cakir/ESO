@@ -7,7 +7,7 @@
 
 # -- Project information -----------------------------------------------------
 
-project = "ESO"
+project = "eso"
 copyright = "2024, Ufuk Çakır"
 author = "Ufuk Çakır"
 

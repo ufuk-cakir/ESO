@@ -6,7 +6,7 @@ b = Config()
 print("default")
 print(b.chromosome.dict())
 print(b.input, b.algorithm)
-c = Config("/Users/ufuk/1. Research/AIMS/Project Repo/ESO/settings/settings.json")
+c = Config("/Users/ufuk/1. Research/AIMS/Project Repo/eso/settings/settings.json")
 # default settings
 print("json file")
 print(c.chromosome.dict())
@@ -39,7 +39,7 @@ settings = {
         "f_min": 4000,
         "f_max": 9000,
         "keep_in_memory": False,
-        "species_folder": "/Users/ufuk/1. Research/AIMS/Project Repo/ESO/data",
+        "species_folder": "/Users/ufuk/1. Research/AIMS/Project Repo/eso/data",
     },
     "population": {
         "pop_size": 10,
