@@ -4,9 +4,11 @@ repos:
     hooks:
       - id: ruff-format # formatter
         types_or: [python, pyi, jupyter, toml]
+        exclude: "^(tests/|docs/|notebooks/)"
       - id: ruff # linter
         types_or: [python, pyi, jupyter, toml]
         args: [--fix]
+        exclude: "^(tests/|docs/|notebooks/)"
   - repo: https://github.com/RobertCraigie/pyright-python
     rev: v1.1.379
     hooks:
@@ -19,6 +21,7 @@ repos:
             pytest,
             wadler_lindig,
           ]
+        exclude: "^(tests/|docs/|notebooks/)"
 
   - repo: local
     hooks:
