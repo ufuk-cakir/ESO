@@ -1,6 +1,6 @@
-
 # The version file is generated automatically by setuptools_scm
-from ESO._version import version as __version__
+# from eso._version import version as __version__  # noqa # type: ignore
+
 
 def add_one(x: int):
     """An example function that increases a number

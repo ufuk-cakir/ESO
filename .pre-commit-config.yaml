@@ -1,0 +1,30 @@
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.6.4
+    hooks:
+      - id: ruff-format # formatter
+        types_or: [python, pyi, jupyter, toml]
+      - id: ruff # linter
+        types_or: [python, pyi, jupyter, toml]
+        args: [--fix]
+  - repo: https://github.com/RobertCraigie/pyright-python
+    rev: v1.1.379
+    hooks:
+      - id: pyright
+        entry: uv run pyright
+        additional_dependencies:
+          [
+            jax,
+            jaxtyping,
+            pytest,
+            wadler_lindig,
+          ]
+
+  - repo: local
+    hooks:
+      - id: run-tests
+        name: Run pytest before commit
+        entry: uv run pytest tests/
+        language: system
+        types: [python]
+        pass_filenames: false
