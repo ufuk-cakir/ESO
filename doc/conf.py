@@ -28,7 +28,6 @@ extensions = [
     "sphinx_mdinclude",
     "sphinx.ext.autodoc",
     "sphinx.ext.autosummary",
-    "pydata-sphinx-theme"
 ]
 
 # Add any paths that contain templates here, relative to this directory.
