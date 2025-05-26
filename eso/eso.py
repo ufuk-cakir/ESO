@@ -1,13 +1,14 @@
+
 from copy import deepcopy
-from .model.data import Data
-from .model.model import Model
-from .genetic_algorithm.selection import SelectionOperator
-from .genetic_algorithm.operator import GeneticOperator
-from .genetic_algorithm.population import Population
-from .utils.settings import Config
-from .utils.Evaluation import Evaluation
-from .utils.unpickler import CPU_Unpickler
-from .utils.logger import setup_logger, log_tensorboard, setup_tensorboard, plot_chromosome
+from eso.model.data import Data
+from eso.model.model import Model
+from eso.ga.selection import SelectionOperator
+from eso.ga.operator import GeneticOperator
+from eso.ga.population import Population
+from eso.utils.settings import Config
+from eso.utils.Evaluation import Evaluation
+from eso.utils.unpickler import CPU_Unpickler
+from eso.utils.logger import setup_logger, log_tensorboard, setup_tensorboard, plot_chromosome
 import json
 import os
 import matplotlib.pyplot as plt
@@ -89,8 +90,7 @@ class ESO:
         log_path=None,
         tensorboard_log_dir=None,
         results_path="results",
-        progress_bar=None,
-        progress_bar_training=None,
+        progress_handler=None,
     ):
         self.logger = setup_logger(
             logger=logger, log_path=log_path, log_level=log_level, name="eso"
@@ -122,11 +122,11 @@ class ESO:
         
         
         self.config = Config(settings)
+        self.logger.debug(f"Config: {self.config}")
         self.stop_event = stop_event
         self.population_file_path = population_file_path
         self.tensorboard_log_dir = tensorboard_log_dir
-        self.progress_bar = progress_bar
-        self.progress_bar_training = progress_bar_training
+        self.progress_handler = progress_handler
         # If tensorboard_log_dir is None, self.writer is None
         os.makedirs(self.results_path, exist_ok=True)
         self._all_time_best_fitness = -np.inf
@@ -215,7 +215,11 @@ class ESO:
         X_val, Y_val = data.get_data("validation")
 
         image_shape = data.get_image_shape()
-    
+
+        self.logger.info(f"Image shape: {image_shape}")
+        self.logger.info(f"model_args: {model_args}")
+        self.logger.info(f"architecture_args: {self.config.cnn_architecture.dict()}")
+        self.logger.info(f"results_path: {self.results_path}")
         model = Model(self.results_path,
             input_shape=(1, image_shape[0], image_shape[1]),
             logger=self.logger, architecture_args= self.config.cnn_architecture.dict(),
@@ -307,9 +311,9 @@ class ESO:
         base_results = self._get_baseline_results()
         self._write_baseline_results_to_config(base_results)
         self._check_minimum_image_shape()
-        if self.progress_bar is not None:
-            self.progress_bar["value"] = 0
-            self.progress_bar["maximum"] = max_generations
+        if self.progress_handler:
+            self.progress_handler.set_main_value(0)
+            self.progress_handler.set_main_max(max_generations)
 
         self.optimize(max_generations)
         # Clean up and save
@@ -385,7 +389,6 @@ class ESO:
         self.logger.debug("Creating datasets for chromosomes...")
         data.create_datasets()
         # Check distribution
-        self.logger.info(f"Data Distribution:{data._distribution}")
         self.logger.info(f"Encoding: {data.get_encoded_mapping()}")
         # Initialize Population
         if self.population_file_path is not None:
@@ -426,8 +429,8 @@ class ESO:
                     self.logger.info("Stopping ESO...")
                     break
 
-            if self.progress_bar is not None:
-                self.progress_bar["value"] = epoch
+            if self.progress_handler: # << MODIFIED
+                self.progress_handler.set_main_value(epoch + 1) # +1 because epoch is 0-indexed
 
             if epoch != 0:
                 self.population.reset_trained_flags()
@@ -441,7 +444,7 @@ class ESO:
             )
             # this will evaluate the fitness of each chromosome
             stop = self.population.train_population(
-                progress_bar_training=self.progress_bar_training,
+                progress_handler=self.progress_handler,
                 stop_event=self.stop_event,
             )
             
@@ -457,18 +460,23 @@ class ESO:
                 
                 self._best_chromosome = deepcopy(best_chromosome)
                 self._all_time_best_fitness = best_chromosome.get_fitness()
+                image_name_base = "all_time_best_chromosome"
+                image_full_path = os.path.abspath(
+                    os.path.join(self.results_path, f"{image_name_base}.png")
+                )
                 plot_chromosome(
                     best_chromosome,
                     self.config.gene.spec_height,
                     self.config.model.metric,
                     self.results_path,
-                    name="all_time_best_chromosome",
+                    name=image_name_base,
                 )
+                
+                if self.progress_handler: # << NOTIFY HANDLER
+                    self.progress_handler.notify_best_chromosome_image_updated(image_full_path)
+                
                 if self.results_path is not None:
                     self._save_results()
-
-                    #self._best_chromosome.save(self.results_path, "eso_chromosome")
-                    #self._best_chromosome.save_model(self.results_path)
 
             # Log to Tensorboard
             log_tensorboard(
@@ -542,7 +550,9 @@ class ESO:
             max_retries=5 #to avoid infinite loop
             retry_count =0
             while retry_count < max_retries:
+                self.evolution_logger.debug(f"Retry count: {retry_count}")
                 try:
+                    self.evolution_logger.debug("Selecting parents for crossover...")
                     # Place your code here that might raise an error
                     parent1, parent2 = self.parent_selector.select_parents(self.population)
                     self.evolution_logger.debug(f"Parent1:{str(parent1)}")
@@ -554,10 +564,11 @@ class ESO:
                     break  # Exit the loop if successful
                 
                 except Exception as e:  # if height of the offsprings is too small need to redo the process
-                        print(f"Error occurred: {e}. Retrying... ({retry_count + 1}/{max_retries})")
-                        retry_count += 1
-                        if retry_count == max_retries:
-                            print("Max retries reached. Exiting...")
+                    self.evolution_logger.error(f"Error during crossover: {e}")
+                    print(f"Error occurred: {e}. Retrying... ({retry_count + 1}/{max_retries})")
+                    retry_count += 1
+                    if retry_count == max_retries:
+                        print("Max retries reached. Exiting...")
             
             new_chromosomes.append(offspring1)
             new_chromosomes.append(offspring2)

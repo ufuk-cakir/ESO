@@ -66,6 +66,8 @@ class Data:
             preproces_name = "preprocessed"
         else:
             preproces_name = "unpreprocessed"
+        self.logger.info("Preprocessing name: ", preproces_name)
+        self.logger.info("Species folder: ", self.species_folder)
         self.save_path = Path(self.species_folder, "SavedData", preproces_name)
         preprocessing = Preprocessing(
             **self.preprocessing_args,
@@ -164,7 +166,6 @@ class Data:
             self.logger.info(
                 "Dataset created and saved at " + save_type_path + "/X.pkl"
             )
-        self._distribution = preprocessing.check_distribution(Y)
 
     def get_image_shape(self) -> tuple:
         """Returns the shape of one image"""

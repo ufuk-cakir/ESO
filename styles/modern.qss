@@ -1,0 +1,194 @@
+/* ----------------------------------------------------
+   Modern ESO – full application style-sheet (Qt QSS)
+   ---------------------------------------------------- */
+
+/*****  General window *****/
+QMainWindow {
+    background-color: #F4F7FC;   /* light grey-blue background */
+}
+
+/*****  “Card” containers (white panels) *****/
+QWidget#controlCard,
+QWidget#outputCard,
+QWidget#settingsTabContainer,
+QWidget#consoleTabContainer {
+    background-color: white;
+    border: 1px solid #E0E0E0;
+    border-radius: 12px;
+}
+
+/* extra padding for the two top cards that hold widgets directly */
+QGroupBox#controlCard,
+QGroupBox#outputCard {
+    padding: 20px;
+}
+
+/* extra space at the very top of the settings card */
+QWidget#settingsTabContainer {
+    padding-top: 20px;   /* add top padding requested */
+}
+
+/*****  Group-box titles *****/
+QGroupBox::title {
+    subcontrol-origin: margin;
+    subcontrol-position: top left;
+    padding: 10px 0px 8px 15px;   /* T R B L */
+    color: #101828;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/*****  Dynamic category group-boxes inside Settings *****/
+QWidget#settingsTabContainer QGroupBox {
+    background-color: white;
+    border: 1px solid #EAECF0;
+    border-radius: 8px;
+    margin-top: 10px;
+    padding: 10px;
+}
+
+/*****  Common widgets *****/
+QLabel {
+    color: #344054;
+    font-size: 13px;
+}
+
+/* text entry widgets */
+QLineEdit,
+QSpinBox,
+QDoubleSpinBox {
+    background-color: #F9FAFB;     /* light gray instead of black */
+    border: 1px solid #D0D5DD;
+    border-radius: 6px;
+    padding: 8px 10px;
+    font-size: 13px;
+    color: #101828;
+}
+
+QLineEdit:read-only,
+QSpinBox:disabled,
+QDoubleSpinBox:disabled {
+    background-color: #ECEEF2;     /* even lighter when disabled */
+    color: #9AA0B2;
+}
+
+QPushButton {
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: 8px;
+    padding: 9px 15px;
+    color: white;
+    background-color: #7F56D9;
+    border: 1px solid #7F56D9;
+}
+QPushButton:hover  { background-color: #6941C6; border-color: #6941C6; }
+QPushButton:pressed{ background-color: #53389E; }
+QPushButton:disabled{ background-color: #E9D7FE; border-color: #E9D7FE; color: #BDB1D4; }
+
+/* special variant for the folder browse button */
+QPushButton#browseButton {
+    background-color: #FFFFFF;
+    color: #344054;
+    border: 1px solid #D0D5DD;
+}
+QPushButton#browseButton:hover {
+    background-color: #F9FAFB;
+}
+
+/*****  Progress bars *****/
+QProgressBar {
+    border: none;
+    border-radius: 6px;
+    text-align: center;
+    background-color: #EAECF0;
+    height: 10px;
+    font-size: 10px;
+    color: #475467;
+}
+QProgressBar::chunk {
+    background-color: #7F56D9;
+    border-radius: 6px;
+}
+
+/*****  Tab widget *****/
+QTabWidget::pane {
+    border: none;              /* remove border around pages */
+    padding: 0px;
+}
+
+QTabBar::tab {
+    background-color: #F9FAFB;
+    color: #667085;
+    border: 1px solid #E0E0E0;
+    border-bottom: none;       /* for merged look with page */
+    padding: 10px 20px;
+    font-size: 13px;
+    font-weight: 500;
+    margin-right: 2px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+QTabBar::tab:selected {
+    background-color: white;
+    color: #7F56D9;
+    border-color: #D0D5DD;
+    font-weight: bold;
+}
+QTabBar::tab:hover {
+    background-color: #EFF4FF;
+    color: #6941C6;
+}
+
+/*****  Scroll-area viewport (Settings) *****/
+QScrollArea,
+QScrollArea > QWidget > QWidget {   /* viewport */
+    background-color: white;
+    border: none;
+}
+
+/*****  Console / log view *****/
+QTextEdit {
+    border: 1px solid #D0D5DD;
+    border-radius: 8px;
+    padding: 8px;
+    background-color: #FDFDFF;
+    font-family: "Menlo", "Consolas", "Courier New", monospace;
+    font-size: 12px;
+    color: #1D2939;
+}
+
+/*****  Menu bar & menus *****/
+QMenuBar {
+    background-color: #FFFFFF;
+    border-bottom: 1px solid #EAECF0;
+    font-size: 13px;
+}
+QMenuBar::item {
+    spacing: 3px;
+    padding: 4px 10px;
+    background: transparent;
+    border-radius: 4px;
+    color: #344054;
+}
+QMenuBar::item:selected { background: #EFF4FF; color: #1D2939; }
+QMenuBar::item:pressed  { background: #D6DFFC; }
+
+QMenu {
+    background-color: #FFFFFF;
+    border: 1px solid #D0D5DD;
+    padding: 5px;
+    font-size: 13px;
+    border-radius: 6px;
+}
+QMenu::item {
+    padding: 6px 20px 6px 10px;  /* T/R/B/L */
+    color: #344054;
+    border-radius: 4px;
+}
+QMenu::item:selected { background-color: #EFF4FF; color: #1D2939; }
+QMenu::icon         { margin-left: 5px; }
+QMenu::separator    {
+    height: 1px;
+    background: #EAECF0;
+    margin: 5px 0px;
+}

@@ -26,8 +26,10 @@ def calc_back_conv(input_size, conv_layer, dim):
     stride = conv_layer.stride[dim]
     padding = conv_layer.padding[dim]
     dilation = conv_layer.dilation[dim]
-    return ((input_size - 1) * stride) - 2 * padding + dilation * (kernel_size - 1) + 1
 
+    #return ((input_size - 1) * stride) - 2 * padding + dilation * (kernel_size - 1) + 1
+    #correction ? 
+    return ((input_size - 1) * stride) - 2 * padding + kernel_size
 
 def calc_back_pool(input_size, pool_layer, dim):
     """Calculate the input size of a MaxPool2d layer
@@ -53,8 +55,13 @@ def calc_back_pool(input_size, pool_layer, dim):
         if isinstance(pool_layer.kernel_size, int)
         else pool_layer.kernel_size[dim]
     )
-    return input_size * kernel_size
-
+    stride=(pool_layer.stride
+            if isinstance(pool_layer.kernel_size, int)
+            else pool_layer.kernel_size[dim]
+    )
+    #return input_size * kernel_size
+    #correction ?
+    return ((input_size - 1) * stride) + kernel_size
 
 def get_conv_output_dim(layer: nn.Module, input_dim: tuple) -> tuple:
     """Calculate output dimension of a CNN layer
@@ -100,6 +107,8 @@ class BaseCNN(nn.Module):
         max_pooling_size,
         fc_units,
         fc_layers,
+        conv_padding = None, 
+        stride_maxpool = None, 
     ):
         """Base CNN model for the classification of the images
 
@@ -132,16 +141,24 @@ class BaseCNN(nn.Module):
         self.max_pooling_size = max_pooling_size
         self.fc_units = fc_units
         self.n_fc_layers = fc_layers
+        self.conv_padding=conv_padding
+        if stride_maxpool is None : 
+            self.stride_maxpool= max_pooling_size
+        else : self.stride_maxpool= stride_maxpool
+
+        if conv_padding is None : 
+            self.conv_padding=0
+        else : self.conv_padding = conv_padding
 
         # Convolutional layers
         self.conv_layers = nn.Sequential()
         self.conv_layers.add_module(
             "conv0",
-            nn.Conv2d(n_channels, self.conv_filters, kernel_size=self.conv_kernel),
+            nn.Conv2d(n_channels, self.conv_filters, kernel_size=self.conv_kernel, padding=self.conv_padding),
         )
         self.conv_layers.add_module("relu0", nn.ReLU())
         self.conv_layers.add_module("dropout0", nn.Dropout(self.dropout_rate))
-        self.conv_layers.add_module("maxpool0", nn.MaxPool2d(self.max_pooling_size))
+        self.conv_layers.add_module("maxpool0", nn.MaxPool2d(self.max_pooling_size, stride= self.stride_maxpool))
 
         for i in range(1, self.n_conv_layers):
             self.conv_layers.add_module(

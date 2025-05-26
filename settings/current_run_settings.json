@@ -1,0 +1,235 @@
+{
+    "algorithm": {
+        "max_generations": {
+            "value": 100,
+            "type": "int",
+            "description": "The maximum number of generations for the genetic algorithm."
+        }
+    },
+    "genetic_operator": {
+        "mutation_rate": {
+            "value": 0.1,
+            "type": "float",
+            "description": "Mutation rate in the genetic algorithm."
+        },
+        "crossover_rate": {
+            "value": 0.8,
+            "type": "float",
+            "description": "Crossover rate in the genetic algorithm."
+        },
+        "reproduction_rate": {
+            "value": 0.1,
+            "type": "float",
+            "description": "Reproduction rate in the genetic algorithm."
+        }
+    },
+    "selection_operator": {
+        "tournament_size": {
+            "value": 10,
+            "type": "int",
+            "description": "The size of the tournament in the selection operator."
+        }
+    },
+    "data": {
+        "force_recreate_dataset": {
+            "value": false,
+            "type": "bool",
+            "description": "Flag to force dataset recreation."
+        },
+        "keep_in_memory": {
+            "value": false,
+            "type": "bool",
+            "description": "Flag to keep the dataset in memory."
+        },
+        "reshuffle": {
+            "value": false,
+            "type": "bool",
+            "description": "Wheter or not to reshuffle the datafiles used for training/testing/validating."
+        },
+        "species_folder": {
+            "value": "",
+            "type": "str",
+            "description": "Folder path for species data."
+        },
+        "train_size": {
+            "value": -4.3,
+            "type": "float",
+            "description": "Proportion of data used for training."
+        },
+        "test_size": {
+            "value": 0.2,
+            "type": "float",
+            "description": "Proportion of data used for testing. Validation size will be the rest."
+        },
+        "positive_class": {
+            "value": "gibbon",
+            "type": "str",
+            "description": "Label for the positive class."
+        },
+        "negative_class": {
+            "value": "no-gibbon",
+            "type": "str",
+            "description": "Label for the negative class."
+        }
+    },
+    "preprocessing": {
+        "sampling_rate": {
+            "value": 32000,
+            "type": "int",
+            "description": "recording frequency of the audio files."
+        },
+        "lowpass_cutoff": {
+            "value": 2000,
+            "type": "int",
+            "description": "Lowpass cutoff frequency for audio preprocessing."
+        },
+        "downsample_rate": {
+            "value": 4800,
+            "type": "int",
+            "description": "Audio downsampling rate."
+        },
+        "nyquist_rate": {
+            "value": 2400,
+            "type": "int",
+            "description": "Nyquist rate for audio processing."
+        },
+        "segment_duration": {
+            "value": 4,
+            "type": "int",
+            "description": "Duration of audio segments."
+        },
+        "nb_negative_class": {
+            "value": 20,
+            "type": "int",
+            "description": "Number of negative class samples."
+        },
+        "file_type": {
+            "value": "svl",
+            "type": "str",
+            "description": "File type for audio data."
+        },
+        "audio_extension": {
+            "value": ".wav",
+            "type": "str",
+            "description": "Audio file extension."
+        },
+        "n_fft": {
+            "value": 1024,
+            "type": "int",
+            "description": "Number of FFT points for audio processing."
+        },
+        "hop_length": {
+            "value": 256,
+            "type": "int",
+            "description": "Hop length for audio processing."
+        },
+        "n_mels": {
+            "value": 128,
+            "type": "int",
+            "description": "Number of Mel frequency bands."
+        },
+        "f_min": {
+            "value": 4000,
+            "type": "int",
+            "description": "Minimum frequency for Mel spectrogram."
+        },
+        "f_max": {
+            "value": 9000,
+            "type": "int",
+            "description": "Maximum frequency for Mel spectrogram."
+        }
+    },
+    "population": {
+        "pop_size": {
+            "value": 10,
+            "type": "int",
+            "description": "Size of the population in the genetic algorithm."
+        }
+    },
+    "gene": {
+        "min_position": {
+            "value": 0,
+            "type": "int",
+            "description": "Minimum position value for genes."
+        },
+        "max_position": {
+            "value": -1,
+            "type": "int",
+            "description": "Maximum position value for genes."
+        },
+        "min_height": {
+            "value": 1,
+            "type": "int",
+            "description": "Minimum height value for genes."
+        },
+        "max_height": {
+            "value": 10,
+            "type": "int",
+            "description": "Maximum height value for genes."
+        }
+    },
+    "chromosome": {
+        "num_genes": {
+            "value": 10,
+            "type": "int",
+            "description": "Number of genes in a chromosome."
+        },
+        "min_num_genes": {
+            "value": -1,
+            "type": "int",
+            "description": "Minimum number of genes in a chromosome."
+        },
+        "max_num_genes": {
+            "value": -1,
+            "type": "int",
+            "description": "Maximum number of genes in a chromosome."
+        },
+        "lambda_1": {
+            "value": 0.5,
+            "type": "float",
+            "description": "Lambda 1 parameter for the genetic algorithm."
+        },
+        "lambda_2": {
+            "value": 0.5,
+            "type": "float",
+            "description": "Lambda 2 parameter for the genetic algorithm."
+        }
+    },
+    "model": {
+        "optimizer_name": {
+            "value": "adam",
+            "type": "str",
+            "description": "Name of the optimizer used for training the model."
+        },
+        "loss_function_name": {
+            "value": "cross_entropy",
+            "type": "str",
+            "description": "Name of the loss function used for training the model."
+        },
+        "num_epochs": {
+            "value": 1,
+            "type": "int",
+            "description": "Number of training epochs for the model."
+        },
+        "batch_size": {
+            "value": 128,
+            "type": "int",
+            "description": "Batch size used during training."
+        },
+        "learning_rate": {
+            "value": 0.001,
+            "type": "float",
+            "description": "Learning rate used for training the model."
+        },
+        "shuffle": {
+            "value": true,
+            "type": "bool",
+            "description": "Flag indicating whether to shuffle data during training."
+        },
+        "metric": {
+            "value": "f1",
+            "type": "str",
+            "description": "Metric used to evaluate model performance. Currently supported f1 and accuracy."
+        }
+    }
+}

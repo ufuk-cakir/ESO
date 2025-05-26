@@ -19,7 +19,7 @@ class GeneticOperatorConfig(BaseConfig):
     mutation_rate: float = 0.1
     crossover_rate: float = 0.8
     reproduction_rate: float = 0.1
-    mutation_height_range: int = 0
+    mutation_height_range: int = 5
     mutation_position_range: int = 20
 
 
@@ -42,6 +42,7 @@ class DataConfig(BaseConfig):
 
 @dataclass
 class PreprocessingConfig(BaseConfig):
+    sample_rate: int = 32000
     lowpass_cutoff: int = 2000
     downsample_rate: int = 4800
     nyquist_rate: int = 2400
@@ -65,20 +66,22 @@ class PopulationConfig(BaseConfig):
 class GeneConfig(BaseConfig):
     min_position: int = 0
     max_position: int = -1
-    min_height: int = 1
-    max_height: int = 10
+    min_height: int = 4
+    max_height: int = 16
     band_position: int = None
     band_height: int = None
     spec_height: int = None
+    minimum_gene_height: int = None
 
 
 @dataclass
 class ChromosomeConfig(BaseConfig):
-    num_genes: int = 10
-    min_num_genes: int = -1
-    max_num_genes: int = -1
+    num_genes: int = None
+    min_num_genes: int = 3
+    max_num_genes: int = 10
     lambda_1: float = 0.5
     lambda_2: float = 0.5
+    stack: bool = False
     baseline_parameters: float = None
     baseline_metric: int = None
 
@@ -92,6 +95,18 @@ class ModelConfig(BaseConfig):
     learning_rate: float = 0.001
     shuffle: bool = True
     metric: str = "f1"
+
+@dataclass
+class ArchitectureConfig(BaseConfig):
+    conv_layers: int = 1
+    conv_filters: int = 8
+    dropout_rate: float = 0.5
+    conv_kernel: int = 8
+    max_pooling_size: int = 4
+    fc_units: int = 32
+    fc_layers: int = 2
+    conv_padding: str = None
+    stride_maxpool: int = None
 
 
 @dataclass
@@ -110,6 +125,7 @@ class Config(BaseConfig):
     gene: GeneConfig = field(default_factory=GeneConfig)
     chromosome: ChromosomeConfig = field(default_factory=ChromosomeConfig)
     model: ModelConfig = field(default_factory=ModelConfig)
+    cnn_architecture: ArchitectureConfig = field(default_factory=ArchitectureConfig)
 
     def __post_init__(self):
         if self._input is None:
