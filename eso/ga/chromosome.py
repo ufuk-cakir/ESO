@@ -1,20 +1,20 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed Sep 20 12:17:35 2023
-Updated on Mon Apr 21 2025
 
 @author: ljeantet, ufuk-cakir
 """
 
-from typing import Optional
+
 import numpy as np
-from eso.ga.gene import Gene
-from eso.model.model import Model
+from .gene import Gene
+from ..model.model import Model
 import pickle
 import os
 from copy import deepcopy
 import torch
-import logging
+
+# from .model.data import Data
 
 
 class Chromosome:
@@ -49,6 +49,7 @@ class Chromosome:
 
     def __init__(
         self,
+        results_path,
         num_genes: int,
         min_num_genes: int,
         max_num_genes: int,
@@ -56,25 +57,30 @@ class Chromosome:
         baseline_parameters: int,
         gene_args: dict,
         model_args: dict,
+        architecture_args: dict,
         lambda_1: float = 0.5,
         lambda_2: float = 0.5,
-        logger: logging.Logger | None = None,
+        stack: bool = False,
+        logger=None,
     ):
+        self.results_path=results_path
         self.num_genes = num_genes
         self._min_num_genes = min_num_genes
         self._max_num_genes = max_num_genes
         self.logger = logger
         self._fitness = -np.inf  # Default to -inf
         self._metric = None
-        self._metric_name: Optional[str] = None
+        self._metric_name = None
         self._trainable_parameters = None
         self._baseline_metric = baseline_metric
         self._baseline_parameters = baseline_parameters
         self.trained = False
         self._model_args = model_args
+        self._architecture_args = architecture_args
         self._lambda_1 = lambda_1
         self._lambda_2 = lambda_2
         self._gene_args = gene_args
+        self.stack = stack
         self._init_chromosome()
 
     def _init_chromosome(self):
@@ -84,11 +90,16 @@ class Chromosome:
         """
 
         # Check if min_num_genes is set
-        if self._min_num_genes != -1 and self._max_num_genes != -1:
+        if self.num_genes is None :
             if self._min_num_genes > self._max_num_genes:
                 raise ValueError("min_num_genes cannot be greater than max_num_genes")
             # Randomly select the number of genes
             self.num_genes = np.random.randint(self._min_num_genes, self._max_num_genes)
+        
+        # Based on number of gene, adjust the minimum weight
+        if not self.stack :
+             self._gene_args['minimum_gene_height']=self._gene_args['minimum_gene_height']//self.num_genes+1
+        
         # Initialize the genes
         self._genes = [Gene(**self._gene_args) for _ in range(self.num_genes)]
         self.sort()
@@ -162,7 +173,7 @@ class Chromosome:
         """
         info = "Chromosome Info:\n"
         info += f"Number of Genes: {self.num_genes}\n"
-        info += f"{self._metric_name.capitalize()}: {self._metric}\n"  # type: ignore
+        info += f"{self._metric_name.capitalize()}: {self._metric}\n"
         info += f"Trainable parameters: {self._trainable_parameters}\n"
         info += f"Fitness: {self._fitness}\n"
         info += "Genes: \n"
@@ -178,7 +189,7 @@ class Chromosome:
         """Get the number of trainable parameters of the chromosome"""
         return self._trainable_parameters
 
-    def train(self, X_train, Y_train, X_val, Y_val):
+    def train(self, X_train, Y_train, X_val, Y_val, save=False, model_name="eso_chromosome"):
         """Train the chromosome
 
         Create the sliced dataset from the encoded bands from the genes and train the model on this dataset.
@@ -209,14 +220,15 @@ class Chromosome:
             pass
 
         # Initialize Model
-        model = Model(
+        model = Model(self.results_path,
             input_shape=(self._n_channels, image_shape[0], image_shape[1]),
+            logger=self.logger, architecture_args=self._architecture_args,
             **self._model_args,
             use_chromosome=True,
         )
 
         # Train model
-        self._loss = model.train(X_train=sliced_X_train, Y_train=Y_train)
+        self._loss = model.train(X_train=sliced_X_train, Y_train=Y_train, X_val=sliced_X_val, Y_val=Y_val, save=save, model_name=model_name)
         # Evaluate model validation accuracy/f1-score
 
         self._metric, self._metric_name = model.evaluate(
@@ -254,30 +266,25 @@ class Chromosome:
     def save_model(self, path, name="chromosome_cnn_state"):
         save_path = os.path.join(path, name + ".pth")
         torch.save(self._model_state_dict, save_path)
-        self.logger.info(
-            f"CNN model state dict saved to {save_path}!"
-        ) if self.logger else None
+        self.logger.info(f"CNN model state dict saved to {save_path}!")
 
     def predict(self, X, device, batch_size=128, threshold=0.5):
         bands = self._create_dataset(X)
         model = Model.load_cnn(self._model_state_dict, device)
-        model.batch_size = batch_size  # type:ignore
+        model.batch_size = batch_size  # TODO change this
         model.eval()
         prediction = model(bands)
         # Predict true label if prob([0,1]) > threshold
         prediction = (prediction[:, 1] > threshold).float()
         return prediction
 
+    #this function doesn't work
     def evaluate(self, X, Y, device, batch_size=128, threshold=None):
         bands = self._create_dataset(X)
-
-        model = Model(
-            input_shape=(self._n_channels, bands.shape[1], bands.shape[2]),
-            **self._model_args,
-            use_chromosome=True,
-        )
+        
+        model = Model(self.results_path,input_shape=(self._n_channels, bands.shape[1], bands.shape[2]), architecture_args=self._architecture_args, **self._model_args, use_chromosome=True)
         cnn = Model.load_cnn(self._model_state_dict, device)
-        model.cnn = cnn
+        model._cnn = cnn
         model.batch_size = batch_size  # TODO change this
         metric, _ = model.evaluate(bands, Y, threshold)
         return metric
@@ -312,7 +319,7 @@ class Chromosome:
             bands.append(band)
             band_heights.append(band_height)
 
-        if np.all(np.array(band_heights) == band_heights[0]):
+        if np.all(np.array(band_heights) == band_heights[0]) and self.stack==True:
             # if all have same height --> stack images
             self._n_channels = len(bands)
             return np.stack(bands)
@@ -320,7 +327,7 @@ class Chromosome:
             self._n_channels = 1
             return np.concatenate(bands)
 
-    def _create_dataset(self, dataset) -> np.ndarray:
+    def _create_dataset(self, dataset) -> np.array:
         """Create the sliced dataset
 
         Loop through the dataset and create the sliced dataset from the encoded bands from the genes.
@@ -345,7 +352,7 @@ class Chromosome:
     def __str__(self):
         gene_info = ""
         for i, gene in enumerate(self._genes):
-            gene_info += f"Gene {i + 1}: {gene}\n"
+            gene_info += f"Gene {i+1}: {gene}\n"
 
         return (
             f"Chromosome Info:\n"

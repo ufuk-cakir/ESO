@@ -5,7 +5,6 @@ Created on Fri Oct  6 10:38:46 2023
 
 @author: aaron-joel
 """
-
 import copy
 
 import random
@@ -18,6 +17,9 @@ from .population import Population
 class GeneticOperator:
     def __init__(
         self,
+        band_height_fixed,
+        band_position_fixed,
+        spec_height,
         crossover_rate,
         mutation_rate,
         reproduction_rate,
@@ -41,17 +43,18 @@ class GeneticOperator:
         self._crossover_rate = crossover_rate
         self._mutation_rate = mutation_rate
         self._reproduction_rate = reproduction_rate
-        self._mutation_hight_range = mutation_height_range
+        self._mutation_height_range = mutation_height_range
         self._mutation_position_range = mutation_position_range
+        self.spec_height=spec_height
         self._check_rates()
+        self.band_height_fixed = band_height_fixed
+        self.band_position_fixed = band_position_fixed
 
     def _check_rates(self):
-        total = self._mutation_rate + self._crossover_rate + self._reproduction_rate
-        if not abs(total - 1.0) < 1e-8:
+        if round(self._mutation_rate + self._crossover_rate + self._reproduction_rate,2) != 1:
+            print(round(self._mutation_rate + self._crossover_rate + self._reproduction_rate,2))
             raise ValueError(
-                "The sum of mutation_rate, crossover_rate and reproduction_rate must be 1, but  got mutation_rate = "
-                f"{self._mutation_rate}, crossover_rate = {self._crossover_rate}, "
-                f"reproduction_rate = {self._reproduction_rate}"
+                "The sum of mutation_rate, crossover_rate and reproduction_rate must be 1"
             )
 
     def set_crossover_rate(self, rate: float) -> None:
@@ -271,14 +274,21 @@ class GeneticOperator:
         # Adjust the position
         mutation_amount = random.randint(
             -self._mutation_position_range, self._mutation_position_range
-        )
+            )
+
         new_position = max(
             genes[i].min_position,
             min(
                 genes[i].get_band_position() + mutation_amount,
-                genes[i].max_position - genes[i].get_band_height(),
+                genes[i].max_position ,
             ),
         )
+        #ensure that the new parameter are constrained within the spectrogram
+        if  new_position + genes[i].get_band_height() > self.spec_height : 
+            new_position =  self.spec_height - genes[i].get_band_height() -  1
+
+
+
         # genes[i].set_band_position(new_position)
         new_chromosome.set_gene(position=i, band_position=new_position)
         return new_chromosome.sort()
@@ -311,13 +321,17 @@ class GeneticOperator:
 
         # Adjust the height slightly
         mutation_amount = random.randint(
-            -self._mutation_hight_range, self._mutation_hight_range
+            -self._mutation_height_range, self._mutation_height_range
         )  # Adjust this range as needed
         new_height = max(
             genes[i].min_height,
             min(genes[i].get_band_height() + mutation_amount, genes[i].max_height),
         )
         # genes[i].set_band_height(new_height)
+        
+        if genes[i].get_band_position() + new_height > self.spec_height : 
+                new_height = self.spec_height - genes[i].get_band_position() - 1
+             
 
         new_chromosome.set_gene(position=i, band_height=new_height)
         return new_chromosome
@@ -345,11 +359,12 @@ class GeneticOperator:
         # Apply Mutation on both
 
         height_mutation_amount = random.randint(
-            -self._mutation_hight_range, self._mutation_hight_range
+            -self._mutation_height_range, self._mutation_height_range
         )  # Adjust this range as needed
         pos_mutation_amount = random.randint(
             -self._mutation_position_range, self._mutation_position_range
         )
+        
         new_height = max(
             genes[i].min_height,
             min(
@@ -365,6 +380,12 @@ class GeneticOperator:
             ),
         )
 
+        #ensure that the new parameter are constrained within the spectrogram
+        #if the new band are outside of the spectrogram, keep the same height but change the position of the band
+        if new_position + new_height > self.spec_height :
+            new_position =  self.spec_height - new_height -  1
+
+        
         new_chromosome.set_gene(i, new_position, new_height)
 
         return new_chromosome.sort()
@@ -390,14 +411,25 @@ class GeneticOperator:
 
         if chromosome._n_channels == 1:
             # Concatenated Chromosome: can mutate position and/or band height
-            choice = random.randint(1, 3)
+            
+            if not self.band_height_fixed  and not self.band_position_fixed : 
+                # can mutate position and band height
+                choice = random.randint(1, 3)
 
-            if choice == 1:
+                if choice == 1:
+                    mutated_chromosome = self._mutate_gene_position(chromosome)
+                elif choice == 2:
+                    mutated_chromosome = self._mutate_gene_height(chromosome)
+                else:
+                    mutated_chromosome = self._mutate_gene(chromosome)
+            
+            elif self.band_height_fixed  and not self.band_position_fixed : 
+                # can mutate only position : 
                 mutated_chromosome = self._mutate_gene_position(chromosome)
-            elif choice == 2:
+
+            elif not self.band_height_fixed  and self.band_position_fixed : 
+                #can mutate only height :
                 mutated_chromosome = self._mutate_gene_height(chromosome)
-            else:
-                mutated_chromosome = self._mutate_gene(chromosome)
 
         else:
             # Stacked Chromosome: only mutate position

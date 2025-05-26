@@ -1,5 +1,6 @@
 import pickle
 from tqdm import tqdm
+import numpy as np
 from .chromosome import Chromosome
 from ..model.data import Data
 
@@ -7,10 +8,12 @@ from ..model.data import Data
 class Population:
     def __init__(
         self,
+        results_path,
         pop_size: int,
         chromosome_args: dict,
         model_args: dict,
         gene_args: dict,
+        architecture_args: dict,
         logger=None,
         chromsomes: list = None,
         data: Data = None,
@@ -18,13 +21,14 @@ class Population:
         """
         Initialize a population.
         """
+        self.results_path=results_path
         self.pop_size = pop_size
-        # TODO CHANGE THIS TO DEFAULT
         self.logger = logger
         self._data = data
         self._chromosome_args = chromosome_args
         self._gene_args = gene_args
         self._model_args = model_args
+        self._architecture_args = architecture_args
         # self._set(config, logger, data)
         # Initialize Data
         # data_config = config["preprocessing"]
@@ -75,7 +79,7 @@ class Population:
         loaded_population.logger = logger
         return loaded_population
 
-    def train_population(self, progress_bar_training=None, stop_event=None):
+    def train_population(self, progress_handler=None, stop_event=None):
         """
         Train the population of chromosomes.
 
@@ -85,9 +89,9 @@ class Population:
         train_X, train_Y = self._data.get_data(type="train")
         val_X, val_Y = self._data.get_data(type="validation")
         # validation_loader = self._data.get_validation_data()
-        if progress_bar_training is not None:
-            progress_bar_training["maximum"] = self.pop_size
-            progress_bar_training["value"] = 0
+        if progress_handler:
+            progress_handler.set_training_max(self.pop_size)
+            progress_handler.set_training_value(0)
 
         for i, chromosome in enumerate(
             tqdm(
@@ -101,8 +105,8 @@ class Population:
                 if stop_event.is_set():
                     self.logger.info("Stopping training...")
                     return True
-            if progress_bar_training is not None:
-                progress_bar_training["value"] = i
+            if progress_handler:
+                progress_handler.set_training_value(i + 1)
 
             if chromosome.trained:
                 self.logger.info(f"Skipping chromosome {i}.")
@@ -153,10 +157,11 @@ class Population:
     def _initial_population(self):
         # Create the initial population of chromosomes based on the attributes of the class.
         self.chromosomes = [
-            Chromosome(
+            Chromosome(self.results_path,
                 **self._chromosome_args,
-                gene_args=self._gene_args,
+                gene_args=self._gene_args.copy(),
                 model_args=self._model_args,
+                architecture_args=self._architecture_args,
                 logger=self.logger,
             )
             for _ in range(self.pop_size)
