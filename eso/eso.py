@@ -1,4 +1,3 @@
-
 from copy import deepcopy
 from eso.model.data import Data
 from eso.model.model import Model
@@ -615,12 +614,12 @@ class ESO:
 
     
     
-    def evaluate(self, test_type="simple", overlap=0.25, nb_to_group=2, threshold=0.8 ,save_name=None, force_calc_amplitudes=False):
+    def evaluate(self, test_type="simple", overlap=0.25, nb_to_group=2, threshold=0.8 ,save_name=None, force_calc_spectrograms=False):
         starting = datetime.now()
         
         
-        f_baseline, confusion_matrix_baseline, baseline_params, baseline_image_shape, baseline_pixels, baseline_execution_time = self._evaluate_model(model_type="baseline", test_type=test_type, overlap=overlap, nb_to_group=nb_to_group, force_calc_amplitudes=force_calc_amplitudes, threshold=threshold)
-        f_chromosome, confusion_matrix_chromosome, chromosome_params, chromosome_image_shape, chromosome_pixels, chromosome_execution_time = self._evaluate_model(model_type="chromosome", test_type=test_type, overlap=overlap, nb_to_group=nb_to_group, force_calc_amplitudes=force_calc_amplitudes, threshold=threshold)
+        f_baseline, confusion_matrix_baseline, baseline_params, baseline_image_shape, baseline_pixels, baseline_execution_time = self._evaluate_model(model_type="baseline", test_type=test_type, overlap=overlap, nb_to_group=nb_to_group, force_calc_spectrograms=force_calc_spectrograms, threshold=threshold)
+        f_chromosome, confusion_matrix_chromosome, chromosome_params, chromosome_image_shape, chromosome_pixels, chromosome_execution_time = self._evaluate_model(model_type="chromosome", test_type=test_type, overlap=overlap, nb_to_group=nb_to_group, force_calc_spectrograms=force_calc_spectrograms, threshold=threshold)
         
         
         # Make confusion matrix into 1d string
@@ -711,7 +710,7 @@ class ESO:
             
         
     
-    def _evaluate_model(self, model_type="baseline",test_type="presegmented_dataset", overlap=0.25, nb_to_group=2, threshold=0.8, force_calc_amplitudes=False):
+    def _evaluate_model(self, model_type="baseline",test_type="presegmented_dataset", overlap=0.25, nb_to_group=2, threshold=0.8, force_calc_spectrograms=False):
         if model_type == "baseline":
             self.logger.info(
                 "Evaluate performance of the baseline model on the testing dataset"
@@ -730,7 +729,7 @@ class ESO:
                 overlap=overlap, 
                 nb_to_group=nb_to_group,
                 threshold=threshold, 
-                force_calc_amplitudes=force_calc_amplitudes,
+                force_calc_spectrograms=force_calc_spectrograms,
             )
 
         else:
@@ -760,7 +759,7 @@ class ESO:
                 threshold=threshold,
                 chromosome=chromosome,
                 apply_preprocessing=False,
-                force_calc_amplitudes=force_calc_amplitudes,
+                force_calc_spectrograms=force_calc_spectrograms,
             )
 
         return evaluation.run(model, test_type=test_type)
