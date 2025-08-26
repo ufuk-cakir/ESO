@@ -2,16 +2,11 @@ from glob import glob
 import os
 import numpy as np
 import random
-import librosa.display
 import librosa
-from xml.dom import minidom
 from scipy import signal
 from random import randint
 import pickle
-from matplotlib import pyplot as plt
 import pandas as pd
-import math
-import datetime
 from pathlib import Path
 
 from .AnnotationReader import *
@@ -883,6 +878,11 @@ class Preprocessing:
 
         with open(Path(self.species_folder, "DataFiles", "validation.txt"), "w") as f:
             f.write("\n".join(validation_files))
+
+    def check_distribution(self, Y):
+        unique, counts = np.unique(Y, return_counts=True)
+        original_distribution = dict(zip(unique, counts))
+        return original_distribution
 
 
 

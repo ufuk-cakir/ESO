@@ -1,4 +1,3 @@
-import datetime
 from copy import deepcopy
 import glob, os
 from yattag import Doc, indent
@@ -12,9 +11,7 @@ import io
 from sklearn.metrics import f1_score, confusion_matrix, classification_report
 from .logger import *
 from .preprocessing import *
-from .settings import Config
-from ..model.data import Data
-from ..model.model import Model
+
 
 
 # Class to open the chromosome saved on GPU machine on CPU machine
@@ -38,15 +35,18 @@ class Evaluation:
         threshold=0.8,
         chromosome=None,
         apply_preprocessing: bool = True,
-        force_calc_amplitudes: bool = False,
+        force_calc_spectrograms: bool = False,
         logger=None,
         log_path=None,
         log_level=10,
         save_folder: str = "Predictions",
     ) -> None:
+        
+        
+       
         self.logger = setup_logger(
-            logger=logger, log_path=log_path, log_level=log_level
-        )
+                logger=logger, log_path=log_path, log_level=log_level) 
+
 
 
         self.species_folder = species_folder
@@ -66,16 +66,26 @@ class Evaluation:
         self.sampling_rate_origin=self.config.preprocessing.sample_rate
 
         self.chromosome = chromosome
-        self.force_calc_amplitudes = force_calc_amplitudes
+        self.force_calc_spectrograms = force_calc_spectrograms
         
-        os.makedirs(self.save_amplitudes_path, exist_ok=True)
+        
         if self.chromosome == None:
-            self.save_folder = save_folder + "_baseline"
+            self.save_folder_predictions = save_folder + "_baseline"
+            self.save_folder_spectrograms =  "Saved_spectrograms_baseline"
         else:
-            self.save_folder = save_folder + "_chromosome"
+            self.save_folder_predictions = save_folder + "_chromosome"
+            self.save_folder_spectrograms =  "Saved_spectrograms_chromosome"
+        
+        self.save_results = Path(self.species_folder, self.save_folder_predictions)
+        self.save_spectrograms_path=Path(self.species_folder, self.save_folder_spectrograms)
 
-        self.save_results = Path(self.species_folder, self.save_folder)
-        self.save_amplitudes_path = Path(self.save_results, "amplitudes_to_predict")
+        self.prep = Preprocessing(
+            **self.config.preprocessing.dict(),
+            positive_class=self.positive_class,
+            negative_class=self.negative_class,
+            apply_preprocessing=self.apply_preprocessing_flag,
+            species_folder=self.species_folder,
+        )
 
     def _group_consecutives(self, vals, step=1):
         """Return list of consecutive lists of numbers from vals (number list)."""
@@ -165,18 +175,18 @@ class Evaluation:
         softmax_prediction = [i.detach().numpy() for i in prediction_list]
         return np.vstack(softmax_prediction)
 
-    def _calc_amplitudes_to_predict(self, file_name, preprocessing, Saved_amplitudes=False,  verbose = True):
+    def _calc_spectrograms_to_predict(self, file_name, Saved_spectrograms=False,  verbose = True):
         if str(
-            Path(preprocessing.audio_path, file_name + preprocessing.audio_extension)
-        ) in glob(str(preprocessing.audio_path / f"*{preprocessing.audio_extension}")):
+            Path(self.prep.audio_path, file_name + self.prep.audio_extension)
+        ) in glob(str(self.prep.audio_path / f"*{self.prep.audio_extension}")):
             self.logger.info("Found file")
         
-        init_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-5]
+        
             
-        audio_amps, original_sample_rate = preprocessing.read_audio_file(
+        audio_amps, original_sample_rate = self.prep.read_audio_file(
             str(
                 Path(
-                    preprocessing.audio_path, file_name + preprocessing.audio_extension
+                    self.prep.audio_path, file_name + self.prep.audio_extension
                 )
             )
         )
@@ -185,22 +195,22 @@ class Evaluation:
              # Low pass filter
             self.logger.info("Filtering...") if verbose else None
            
-            filtered = preprocessing.butter_lowpass_filter(
-                audio_amps, preprocessing.lowpass_cutoff, preprocessing.nyquist_rate
+            filtered = self.prep.butter_lowpass_filter(
+                audio_amps, self.prep.lowpass_cutoff, self.prep.nyquist_rate
             )
 
             # Downsample
             self.logger.info("Downsampling...") if verbose else None
             
-            amplitudes, sample_rate = preprocessing.downsample_file(
-                filtered, original_sample_rate, preprocessing.downsample_rate
+            amplitudes, sample_rate = self.prep.downsample_file(
+                filtered, original_sample_rate, self.prep.downsample_rate
             )
             del filtered
 
         else:
             
             if original_sample_rate != self.sampling_rate_origin : 
-                amplitudes, sample_rate = preprocessing.downsample_file(
+                amplitudes, sample_rate = self.prep.downsample_file(
                 audio_amps, original_sample_rate, self.sampling_rate_origin
             )
             else :
@@ -211,96 +221,95 @@ class Evaluation:
         del audio_amps
 
         start_values = np.arange(
-            0, len(amplitudes) / sample_rate - preprocessing.segment_duration
+            0, len(amplitudes) / sample_rate - self.prep.segment_duration
         ).astype(int)
         end_values = np.arange(
-            preprocessing.segment_duration, len(amplitudes) / sample_rate
+            self.prep.segment_duration, len(amplitudes) / sample_rate
         ).astype(int)
 
-        amplitudes_to_predict = []
+        spectrograms_to_predict = []
         for i in range(len(start_values)):
             s = start_values[i]
             e = end_values[i]
 
-            S = preprocessing.convert_single_to_image(
+            S = self.prep.convert_single_to_image(
                 amplitudes[s * sample_rate : e * sample_rate], sample_rate
             )
-            amplitudes_to_predict.append(S)
+            spectrograms_to_predict.append(S)
 
     
         del amplitudes 
-        amplitudes_to_predict = np.asarray(amplitudes_to_predict)
+        spectrograms_to_predict = np.asarray(spectrograms_to_predict)
         
         
         # save to disk
-        if Saved_amplitudes : 
+        if Saved_spectrograms : 
             save_dict = {
-                "amplitudes_to_predict": amplitudes_to_predict,
+                "spectrograms_to_predict": spectrograms_to_predict,
                 "sample_rate": sample_rate,
                 "original_sample_rate": original_sample_rate,
                 "len_audio_amps": len_audio_amps,
                 }
             # Save to results folder
-            save_name = Path(self.save_amplitudes_path, file_name + "_amplitudes_to_predict_preprocessing_" + str(self.apply_preprocessing_flag) + ".npy")
-            np.save(save_name, save_dict)
-            self.logger.info("Saved amplitudes to predict to disk: ", save_name)
+            save_name = Path(self.save_spectrograms_path, file_name + "_spectrograms_to_predict_preprocessing_" + str(self.apply_preprocessing_flag) + ".npy")
+            np.save(str(save_name), save_dict)
+            self.logger.info(f"Saved spectrograms to predict to disk: {str(save_name)}")
         
         
-        return  amplitudes_to_predict, sample_rate, original_sample_rate, len_audio_amps
+        return  spectrograms_to_predict, sample_rate, original_sample_rate, len_audio_amps
     
     
-    def _get_amplitudes_to_predict(self, file_name, preprocessing,  verbose = True):
-        # Change this to True to force recalculation of amplitudes to predict, make this a parameter later
-        if self.force_calc_amplitudes:
-            self.logger.info("Forcing recalculation of amplitudes to predict")
-            return self._calc_amplitudes_to_predict(file_name, preprocessing, Saved_amplitudes=False, verbose=verbose)
-        # Check if the amplitudes to predict have already been calculated
+    def _get_spectrograms_to_predict(self, file_name, verbose = True):
+        # Change this to True to force recalculation of spectrograms to predict, make this a parameter later
+        if self.force_calc_spectrograms:
+            self.logger.info("Forcing recalculation of spectrograms to predict")
+            return self._calc_spectrograms_to_predict(file_name, Saved_spectrograms=False, verbose=verbose)
+        # Check if the spectrograms to predict have already been calculated
         else : 
-            save_name = Path(self.save_amplitudes_path, file_name + "_amplitudes_to_predict_preprocessing_" + str(self.apply_preprocessing_flag) + ".npy")
+            save_name = Path(self.save_spectrograms_path, file_name + "_spectrograms_to_predict_preprocessing_" + str(self.apply_preprocessing_flag) + ".npy")
             if os.path.exists(save_name):
-                self.logger.info("Found amplitudes to predict on disk: ", save_name)
+                self.logger.info(f"Found spectrograms to predict on disk:{save_name}")
                 data = np.load(save_name, allow_pickle=True)
-                amplitudes_to_predict = data.item().get("amplitudes_to_predict")
+                spectrograms_to_predict = data.item().get("spectrograms_to_predict")
                 sample_rate = data.item().get("sample_rate")
                 original_sample_rate = data.item().get("original_sample_rate")
                 len_audio_amps = data.item().get("len_audio_amps")
-                return amplitudes_to_predict, sample_rate, original_sample_rate, len_audio_amps
+                return spectrograms_to_predict, sample_rate, original_sample_rate, len_audio_amps
             else:
-                self.logger.info("No amplitudes to predict found on disk")
-                return self._calc_amplitudes_to_predict(file_name, preprocessing, Saved_amplitudes=True, verbose=verbose)
+                self.logger.info("No spectrograms to predict found on disk")
+                return self._calc_spectrograms_to_predict(file_name, Saved_spectrograms=True, verbose=verbose)
     
-    def _process_one_file(self, file_name, model, preprocessing, verbose=True):
+    def _process_one_file(self, file_name, model, verbose=True):
                        
 
-        amplitudes_to_predict, sample_rate, original_sample_rate, len_audio_amps = self._get_amplitudes_to_predict(file_name, preprocessing, verbose=verbose)
+        spectrograms_to_predict, sample_rate, original_sample_rate, len_audio_amps = self._get_spectrograms_to_predict(file_name, verbose=verbose)
         
         
         if self.chromosome != None:
             self.logger.info("Extracting bands of spectrogram from chromosome genes..")
 
-            
-            amplitudes_to_predict = self.chromosome._create_dataset(
-                amplitudes_to_predict
+            spectrograms_to_predict = self.chromosome._create_dataset(
+                spectrograms_to_predict
             )
      
         self.logger.info("Predicting...")
          
         # predictions
         softmax_predictions = self._predictions(
-            model, amplitudes_to_predict, batch_size=128
+            model, spectrograms_to_predict, batch_size=128
         )
 
-        del amplitudes_to_predict
+        del spectrograms_to_predict
 
         binary_predictions = []
         prediction_seconds = []
         for index, softmax_values in enumerate(softmax_predictions):
             # to check : gibbon call has to be associated with (0,1)
             if softmax_values[1] < self.threshold:
-                binary_predictions.append(preprocessing.negative_class)
+                binary_predictions.append(self.negative_class)
                 prediction_seconds.append(0)
             else:
-                binary_predictions.append(preprocessing.positive_class)
+                binary_predictions.append(self.positive_class)
                 prediction_seconds.append(1)
 
         # Group the detections together
@@ -332,7 +341,7 @@ class Evaluation:
                     df_values.append(
                         [
                             pred_values[0],
-                            pred_values[1] + preprocessing.segment_duration,
+                            pred_values[1] + self.prep.segment_duration,
                             600,
                             2000,
                             prediction_name,
@@ -374,27 +383,11 @@ class Evaluation:
         #test_path = Path(self.species_folder, "DataFiles", "test.txt")
         file_names = pd.read_csv(test_path, header=None)
 
-        preprocessing = Preprocessing(
-            **self.config.preprocessing.dict(),
-            positive_class=self.config.data.dict()["positive_class"],
-            negative_class=self.config.data.dict()["negative_class"],
-            apply_preprocessing=self.apply_preprocessing_flag,
-            species_folder=self.species_folder,
-        )
-
-        if os.path.isdir(self.save_results) == False:
-            self.logger.info("creating the folder to save predictions")
-        else:
-            shutil.rmtree(self.save_results)
-            self.logger.info("clean the folder containing predictions")
-
-        os.mkdir(self.save_results)
-
         for file in file_names.values:
             file = file[0]
 
-            self.logger.info("Processing file:", file)
-            self._process_one_file(file, model, preprocessing, verbose=True)
+            self.logger.info(f"Processing file: {file}")
+            self._process_one_file(file, model, verbose=True)
 
     def _overlap(self, start1, end1, start2, end2):
         """how much does the range (start1, end1) overlap with (start2, end2)"""
@@ -404,7 +397,7 @@ class Evaluation:
         return max(0, overlap_end - overlap_start)
 
     def _repair_svl(
-        self, file_names, preprocessing, file_type, audio_extension, annotation_folder, sufix_file
+        self, file_names, file_type, audio_extension, annotation_folder, sufix_file
     ):
         saved_folder = Path(self.species_folder, "Annotations_corrected")
         os.makedirs(saved_folder, exist_ok=True)
@@ -415,10 +408,10 @@ class Evaluation:
                 self.species_folder, file, file_type, audio_extension, self.positive_class,
             )
 
-            audio_amps, original_sample_rate = preprocessing.read_audio_file(
+            audio_amps, original_sample_rate = self.prep.read_audio_file(
                 str(
                     Path(
-                        preprocessing.audio_path, file + preprocessing.audio_extension
+                        self.prep.audio_path, file + self.prep.audio_extension
                     )
                 )
             )
@@ -496,13 +489,7 @@ class Evaluation:
         #test_path = Path(self.species_folder, "DataFiles", "test.txt")
         file_names = pd.read_csv(test_path, header=None)
 
-        preprocessing = Preprocessing(
-            **self.config.preprocessing.dict(),
-            positive_class=self.config.data.dict()["positive_class"],
-            negative_class=self.config.data.dict()["negative_class"],
-            apply_preprocessing=self.apply_preprocessing_flag,
-            species_folder=self.species_folder,
-        )
+
 
         predictions = []
         annotations = []
@@ -519,9 +506,8 @@ class Evaluation:
             )
             self._repair_svl(
                 file_names,
-                preprocessing,
-                preprocessing.file_type,
-                preprocessing.audio_extension,
+                self.prep.file_type,
+                self.prep.audio_extension,
                 annotation_folder="Annotations",
                 sufix_file=".svl",
             )
@@ -531,8 +517,8 @@ class Evaluation:
             reader = AnnotationReader(
                 self.species_folder,
                 file,
-                preprocessing.file_type,
-                preprocessing.audio_extension,
+                self.prep.file_type,
+                self.prep.audio_extension,
                 self.positive_class,
             )
 
@@ -541,7 +527,7 @@ class Evaluation:
             )[0]
             svl["Overlap"] = 0.0
             svl["Cat"] = "TN"
-            svl.loc[svl.Label == preprocessing.positive_class, "Cat"] = "FN"
+            svl.loc[svl.Label == self.positive_class, "Cat"] = "FN"
             svl["Index"] = np.nan
             svl["Nb overlap"] = 0
             svl["Name"] = file
@@ -549,7 +535,7 @@ class Evaluation:
             if os.path.exists(
                 Path(self.species_folder, folder, file + "_predictions.svl")
             ):
-                self.logger.info("Found Prediction: ", file)
+                self.logger.info(f"Found Prediction: {file} ")
                 predict = reader.get_annotation_information(
                     annotation_folder=folder, sufix_file="_predictions.svl"
                 )[0]
@@ -561,19 +547,19 @@ class Evaluation:
                 predict["Name"] = file
 
                 # compare predictions vs annotations
-                if svl[svl.Label == preprocessing.positive_class].shape[0] != 0:
+                if svl[svl.Label == self.positive_class].shape[0] != 0:
                     for index, row in predict.iterrows():
                         idx = np.abs(
                             np.asarray(
-                                svl[svl.Label == preprocessing.positive_class]["Start"]
+                                svl[svl.Label == self.positive_class]["Start"]
                             )
                             - row.iloc[0]
                         ).argmin()  # get the closest window
                         lap = self._overlap(
                             row.iloc[0],
                             row.iloc[1],
-                            svl[svl.Label == preprocessing.positive_class].iloc[idx, 0],
-                            svl[svl.Label == preprocessing.positive_class].iloc[idx, 1],
+                            svl[svl.Label == self.positive_class].iloc[idx, 0],
+                            svl[svl.Label == self.positive_class].iloc[idx, 1],
                         )  # check overlap
 
                         if lap > self.overlap * self.segment_duration :
@@ -586,7 +572,7 @@ class Evaluation:
                     for index, row in predict.iterrows():
                         w = 0
                         for idx_svl, row_svl in svl[
-                            svl.Label == preprocessing.positive_class
+                            svl.Label == self.positive_class
                         ].iterrows():
                             lap = self._overlap(
                                 row.iloc[0],
@@ -614,13 +600,13 @@ class Evaluation:
                     )  # check overlap
 
                     if (lap > self.overlap * self.segment_duration) & (
-                        svl.loc[index, "Label"] == preprocessing.positive_class
+                        svl.loc[index, "Label"] == self.positive_class
                     ):
                         svl.loc[index, "Overlap"] = deepcopy(lap)
                         svl.loc[index, "Index"] = idx
                         svl.loc[index, "Cat"] = "TP"
                     elif (lap > self.overlap * self.segment_duration) & (
-                        svl.loc[index, "Label"] == preprocessing.negative_class
+                        svl.loc[index, "Label"] == self.negative_class
                     ):
                         svl.loc[index, "Overlap"] = deepcopy(lap)
                         svl.loc[index, "Index"] = idx
@@ -631,9 +617,9 @@ class Evaluation:
                 # Print File and FP TP FN
                 self.logger.info("-------------")
                 self.logger.info(file)
-                self.logger.info("FP : ", predict[predict.Cat == "FP"].shape[0])
-                self.logger.info("TP : ", svl[svl.Cat == "TP"].shape[0])
-                self.logger.info("FN : ", svl[svl.Cat == "FN"].shape[0])
+                self.logger.info(f"FP : {predict[predict.Cat == 'FP'].shape[0]}")
+                self.logger.info(f"TP : {svl[svl.Cat == 'TP'].shape[0]} ")
+                self.logger.info(f"FN : {svl[svl.Cat == 'FN'].shape[0]} ")
                 self.logger.info("-------------")
 
                 for index, row in svl.iterrows():
@@ -659,19 +645,11 @@ class Evaluation:
         return Predictions, Annotations
 
     def testing_score(self, Annotations, Predictions):
-        preprocessing = Preprocessing(
-            **self.config.preprocessing.dict(),
-            positive_class=self.config.data.dict()["positive_class"],
-            negative_class=self.config.data.dict()["negative_class"],
-            apply_preprocessing=self.apply_preprocessing_flag,
-            species_folder=self.species_folder,
-        )
+
 
         cat, count = np.unique(Predictions["Cat"], return_counts=True)
-        self.logger.info(cat, count)
-
         cat_a, count_a = np.unique(Annotations["Cat"], return_counts=True)
-        self.logger.info(cat_a, count_a)
+        
 
         FP = count[cat == "FP"][0] if len(count[cat == "FP"]) > 0 else 0
         TP = count_a[cat_a == "TP"][0] if len(count_a[cat_a == "TP"]) > 0 else 0
@@ -683,29 +661,25 @@ class Evaluation:
         confusion=np.array([[TP, FP], [FN, TN]])
 
         self.logger.info(
-            "Number of calls to detect : ",
-            Annotations[Annotations.Label == preprocessing.positive_class].shape[0],
-        )
-        self.logger.info()
-        self.logger.info("False Positif : ", FP)
-        self.logger.info("True Positif : ", TP)
-        self.logger.info("False Negatif : ", FN)
-        self.logger.info()
-        self.logger.info("F1-score : ", F_score)
-        self.logger.info("Accuracy : ", Accuracy)
+            f"Number of calls to detect :{Annotations[Annotations.Label == self.positive_class].shape[0]}")
+        self.logger.info(f"False Positif :  {FP}")
+        self.logger.info(f"True Positif :{TP} ")
+        self.logger.info(f"False Negatif : {FN}" )
+        self.logger.info(f"F1-score : {F_score}")
+        self.logger.info(f"Accuracy : {Accuracy}")
 
         return F_score, Accuracy, confusion
 
 
     def _presegmented_dataset_run(self, model, data_type="test", print_report=True, metric="f1",return_image_shape_and_parameters = True):
-        self.logger.info(type(data_type))
+
         data_path = Path(self.saved_data_folder, data_type)
         X = np.load(data_path / "X.pkl", allow_pickle=True)
         if self.chromosome is not None:
             X = self.chromosome._create_dataset(X)
         
         Y = np.load(data_path / "Y.pkl", allow_pickle=True)
-        self.logger.info("Data Loaded from: ", data_path)
+        self.logger.info(f"Data Loaded from: {str(data_path)}")
         self.logger.info("Evaluating...")
         
         starting = time.time()
@@ -738,12 +712,26 @@ class Evaluation:
 
     def _entire_files_run(self, model, data_type="test", print_report=True, metric="f1",return_image_shape_and_parameters = True):
     
+        #create the folder to save predictions
+        if os.path.isdir(self.save_results) == False:
+            self.logger.info(f"Creating the folder {self.save_results} to save predictions")
+        else:
+            shutil.rmtree(self.save_results)
+            self.logger.info(f"Clean the folder {self.save_results} containing predictions")
+
+        os.mkdir(self.save_results)
+        
+        #Create a folder to save spectrograms generated from the entire test dataset, so they don’t need to be recalculated each time.
+        if not self.force_calc_spectrograms : 
+            self.logger.info(f"Creating the folder {str(self.save_spectrograms_path)} to save spectrograms to predict")
+            os.makedirs(self.save_spectrograms_path, exist_ok=True)
+
         starting = time.time()
         self.prediction_files(model, data_type=data_type)
         execution_time = time.time() - starting
         
         Predictions, Annotations = self.comparison_predictions_annotations(
-            self.save_folder, data_type=data_type
+            self.save_folder_predictions, data_type=data_type
         )
 
         data_path = Path(self.saved_data_folder, data_type)
