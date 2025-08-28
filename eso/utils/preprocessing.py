@@ -234,7 +234,7 @@ class Preprocessing:
         """
         if not self.apply_preprocessing:
             f_min = 0
-            f_max = 11000
+            f_max = 5000
         else:
             f_min = self.f_min
             f_max = self.f_max

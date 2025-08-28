@@ -91,6 +91,7 @@ class ESO:
         results_path="results",
         progress_handler=None,
     ):
+        
         self.logger = setup_logger(
             logger=logger, log_path=log_path, log_level=log_level, name="eso"
         )
@@ -730,6 +731,7 @@ class ESO:
                 nb_to_group=nb_to_group,
                 threshold=threshold, 
                 force_calc_spectrograms=force_calc_spectrograms,
+                logger=self.logger,
             )
 
         else:
@@ -760,6 +762,7 @@ class ESO:
                 chromosome=chromosome,
                 apply_preprocessing=False,
                 force_calc_spectrograms=force_calc_spectrograms,
+                logger=self.logger,
             )
 
         return evaluation.run(model, test_type=test_type)

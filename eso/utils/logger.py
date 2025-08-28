@@ -94,6 +94,8 @@ def setup_logger(logger, log_path, log_level, name=None, add_stream_handler=True
             name = __name__
         logger = logging.getLogger(name)
         logger.setLevel(log_level)
+
+        
         for handler in logger.handlers[:]:
             logger.removeHandler(handler)
         if add_stream_handler:

@@ -38,15 +38,16 @@ class Evaluation:
         force_calc_spectrograms: bool = False,
         logger=None,
         log_path=None,
-        log_level=10,
+        log_level=0,
         save_folder: str = "Predictions",
     ) -> None:
         
         
-       
-        self.logger = setup_logger(
+        if logger==None : 
+            self.logger = setup_logger(
                 logger=logger, log_path=log_path, log_level=log_level) 
-
+        else : 
+            self.logger=logger
 
 
         self.species_folder = species_folder

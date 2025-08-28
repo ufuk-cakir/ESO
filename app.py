@@ -17,8 +17,8 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from PIL import Image, ImageTk
 
-from src.eso.eso import ESO
-from src.eso.utils.settings import Config
+from eso.eso import ESO
+from eso.utils.settings import Config
 
 # Create a custom logger
 logger = logging.getLogger(__name__)
