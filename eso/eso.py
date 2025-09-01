@@ -599,8 +599,8 @@ class ESO:
 
     def save(self):
         self._save_results()
-        with open(os.path.join(self.results_path, "eso.pkl"), "wb") as output_file:
-            pickle.dump(self, output_file)
+        #with open(os.path.join(self.results_path, "eso.pkl"), "wb") as output_file:
+          #  pickle.dump(self, output_file)
 
     def _save_results(self):
         self.population.save(os.path.join(self.results_path, "population"))
