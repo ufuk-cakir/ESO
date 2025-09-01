@@ -750,7 +750,7 @@ class Preprocessing:
                         audio_amps, self.lowpass_cutoff, self.nyquist_rate
                     )
                     # Downsample
-                    amplitudes, sample_rate = self._downsample_file(
+                    amplitudes, sample_rate = self.downsample_file(
                         filtered, original_sample_rate, self.downsample_rate
                     )
                     del filtered
@@ -758,7 +758,7 @@ class Preprocessing:
                 else:
                     
                     if original_sample_rate!=self.sample_rate_unpreprocessed: 
-                        amplitudes, sample_rate = self._downsample_file(
+                        amplitudes, sample_rate = self.downsample_file(
                         audio_amps, original_sample_rate, self.sample_rate_unpreprocessed
                     )
                     else :

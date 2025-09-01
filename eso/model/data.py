@@ -126,7 +126,6 @@ class Data:
                 self.logger.info("Creating the training dataset")
                 # Create the dataset WITH augmentation
                 X, Y = preprocessing.create_dataset(
-                    verbose=False,
                     file_names=path,
                     augmentation=True,
                     annotation_folder="Annotations",
@@ -135,7 +134,6 @@ class Data:
             else:
                 self.logger.info("Creating the validation dataset")
                 X, Y = preprocessing.create_dataset(
-                    verbose=False,
                     file_names=path,
                     augmentation=False,
                     annotation_folder="Annotations",
