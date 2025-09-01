@@ -57,17 +57,28 @@ Instead of processing the *entire* spectrogram, ESO:
 
 ### Getting Started 🛠️
 
-1.  **Clone the repository:**
+1. **Clone the repository**
     ```bash
     git clone https://github.com/ufuk-cakir/ESO.git
     cd ESO
     ```
-2.  **Set up your environment** (virtual environment recommended):
+
+2. **Set up a virtual environment** (recommended)
     ```bash
     python -m venv venv
-    source venv/bin/activate # On Windows use `venv\Scripts\activate`
+    # On Linux/macOS
+    source venv/bin/activate
+    # On Windows
+    venv\Scripts\activate
     ```
-3.  **Install dependencies:**
+
+3. **Install PyTorch** based on your system configuration  
+   (see [PyTorch](https://pytorch.org/get-started/locally/) to choose the correct version for your machine)
+    ```bash
+    pip install torch --index-url https://download.pytorch.org/whl/cu126
+    ```
+
+4. **Install other dependencies**
     ```bash
     pip install -r requirements.txt
     ```
@@ -76,7 +87,7 @@ Instead of processing the *entire* spectrogram, ESO:
 
 *   **Using the GUI:**
     ```bash
-    python path/to/your/gui_launcher.py # TODO
+    python path/to/your/repository/eso_app.py 
     ```
     The GUI provides options to select data, configure hyperparameters, run ESO, and monitor progress (including TensorBoard).
 
