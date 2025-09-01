@@ -53,8 +53,7 @@ class Gene:
 
         if min_height == -1:
             min_height = minimum_gene_height  # 0 is not a valid height
-        if band_height == -1:
-            band_height=None
+
         if min_height < minimum_gene_height:
             min_height=minimum_gene_height
 

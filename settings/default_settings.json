@@ -15,8 +15,8 @@
   },
   "chromosome": {
     "num_genes": {
-      "value": null,
-      "description": "Number of genes in a chromosome.",
+      "value": -1,
+      "description": "Number of genes in a chromosome when using fixed number of genes per chromosome. Use -1 to disable this option.",
       "type": "int"
     },
     "min_num_genes": {

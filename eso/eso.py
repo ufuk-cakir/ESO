@@ -132,15 +132,19 @@ class ESO:
         self._all_time_best_fitness = -np.inf
         self._best_chromosome = None
 
-        if self.config.gene.band_height is not None :
+        # Allow -1 as a special value for the GUI, meaning "automatic sizing"
+        if self.config.gene.band_height == -1:
+            self.config.gene.band_height = None
+
+        if self.config.gene.band_height is not None:
             self.band_height_fixed=True 
         else : self.band_height_fixed = False 
 
-        if self.config.chromosome.num_genes is not None : 
+        if self.config.chromosome.num_genes is not None and self.config.chromosome.num_genes != -1 : 
             self.nb_genes_fixed = True 
         else : self.nb_genes_fixed = False
 
-        if self.config.gene.band_position is not None : 
+        if self.config.gene.band_position is not None and self.config.gene.band_position != -1 : 
             self.band_position_fixed = True
         else : self.band_position_fixed = False 
         
@@ -263,11 +267,14 @@ class ESO:
     def _check_minimum_image_shape(self):
         minimum_shape = self._minimum_input_shape
         minimum_image_height = minimum_shape[0]
+        
+        
+        
         if self.config.chromosome.min_num_genes != -1:
             min_num_genes = self.config.chromosome.min_num_genes
         else:
             min_num_genes = self.config.chromosome.num_genes
-        if self.config.gene.band_height is None:
+        if self.config.gene.band_height is None :
             min_height = self.config.gene.min_height
         else:
             min_height = self.config.gene.band_height
