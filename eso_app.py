@@ -920,7 +920,7 @@ class StyledEsoApp(QMainWindow):
 
 
 def apply_stylesheet(app: QApplication, path: str) -> None:
-    with open(path, "r") as f:
+    with open(path, "r",encoding="utf-8") as f:
         app.setStyleSheet(f.read())
 
 
