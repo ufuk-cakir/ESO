@@ -67,8 +67,8 @@
       "type": "int"
     },
     "band_height": {
-      "value": null,
-      "description": "Set a fixed height for the band, or leave as null for automatic sizing.",
+      "value": -1,
+      "description": "Set a fixed height for the band. Use -1 for different sizing.",
       "type": "int"
     }
   },
