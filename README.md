@@ -41,7 +41,8 @@ Instead of processing the *entire* spectrogram, ESO:
 5.  📉 **Outputs** the best chromosome, which defines narrow bands to be extracted and stacked, creating a highly compressed input for a much simpler CNN.
 
 
-<img width="1665" height="845" alt="eso gene chromosome" src="https://github.com/user-attachments/assets/2f1df798-d606-49b6-8c77-3a3481d0a4ef" />
+
+<img width="1751" height="817" alt="eso gene chromosome" src="https://github.com/user-attachments/assets/4318f530-4aba-49d7-bf6d-c78636131e6a" />
 
 
 <p align="center">
@@ -60,7 +61,8 @@ Instead of processing the *entire* spectrogram, ESO:
 
 ### Example Applications 🔍
 
-<img width="1546" height="1063" alt="Preprocessed" src="https://github.com/user-attachments/assets/99d2e0f1-029a-4be3-8321-21f229efc1b0" />
+
+<img width="1546" height="1059" alt="eso results" src="https://github.com/user-attachments/assets/737fb842-f784-4d6c-b5f1-0fd0476e109d" />
 
 
 ### Getting Started 🛠️
