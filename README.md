@@ -45,7 +45,6 @@ Instead of processing the *entire* spectrogram, ESO:
 
 
 <p align="center">
-  <img src="images/gene-chromosome.pdf" alt="Figure 1 from paper showing ESO concept" width="600"/>
   <br/><em>Concept from Figure 1: Genes define bands, chromosomes collect genes, bands are stacked for the CNN.</em>
 </p>
 
