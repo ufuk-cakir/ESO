@@ -66,8 +66,7 @@ class Data:
             preproces_name = "preprocessed"
         else:
             preproces_name = "unpreprocessed"
-        self.logger.info("Preprocessing name: ", preproces_name)
-        self.logger.info("Species folder: ", self.species_folder)
+
         self.save_path = Path(self.species_folder, "SavedData", preproces_name)
         preprocessing = Preprocessing(
             **self.preprocessing_args,
@@ -91,7 +90,7 @@ class Data:
                 self.logger.info(
                     "Found Existing Files but reshuffle flag ist set. Reshuffling.."
                 )
-                preprocessing._shuffle_files_names(
+                preprocessing.shuffle_files_names(
                     train_size=self._train_size, test_size=self._test_size
                 )
             else:
@@ -101,7 +100,7 @@ class Data:
         else:
             # Files dont exist, create the split
             self.logger.info("Reshuffling file names for the first time...")
-            preprocessing._shuffle_files_names(
+            preprocessing.shuffle_files_names(
                 train_size=self._train_size, test_size=self._test_size
             )
         for type in types:
@@ -127,7 +126,6 @@ class Data:
                 self.logger.info("Creating the training dataset")
                 # Create the dataset WITH augmentation
                 X, Y = preprocessing.create_dataset(
-                    verbose=False,
                     file_names=path,
                     augmentation=True,
                     annotation_folder="Annotations",
@@ -136,7 +134,6 @@ class Data:
             else:
                 self.logger.info("Creating the validation dataset")
                 X, Y = preprocessing.create_dataset(
-                    verbose=False,
                     file_names=path,
                     augmentation=False,
                     annotation_folder="Annotations",
@@ -166,6 +163,7 @@ class Data:
             self.logger.info(
                 "Dataset created and saved at " + save_type_path + "/X.pkl"
             )
+        self._distribution = preprocessing.check_distribution(Y)
 
     def get_image_shape(self) -> tuple:
         """Returns the shape of one image"""

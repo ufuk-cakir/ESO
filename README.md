@@ -40,8 +40,12 @@ Instead of processing the *entire* spectrogram, ESO:
 4.  📈 **Optimizes** for a fitness function balancing classification performance (F1-score) and model simplicity (trainable parameters).
 5.  📉 **Outputs** the best chromosome, which defines narrow bands to be extracted and stacked, creating a highly compressed input for a much simpler CNN.
 
+
+
+<img width="1751" height="817" alt="eso gene chromosome" src="https://github.com/user-attachments/assets/4318f530-4aba-49d7-bf6d-c78636131e6a" />
+
+
 <p align="center">
-  <img src="images/gene-chromosome.pdf" alt="Figure 1 from paper showing ESO concept" width="600"/>
   <br/><em>Concept from Figure 1: Genes define bands, chromosomes collect genes, bands are stacked for the CNN.</em>
 </p>
 
@@ -55,19 +59,37 @@ Instead of processing the *entire* spectrogram, ESO:
 *   🖥️ Includes an easy-to-use **Graphical User Interface (GUI)**.
 *   📊 **TensorBoard** integration for monitoring training progress.
 
+### Example Applications 🔍
+
+
+
+<img width="1920" height="1080" alt="eso result" src="https://github.com/user-attachments/assets/ad65bc95-016a-4436-ab3c-8b441267198f" />
+
+
 ### Getting Started 🛠️
 
-1.  **Clone the repository:**
+1. **Clone the repository**
     ```bash
     git clone https://github.com/ufuk-cakir/ESO.git
     cd ESO
     ```
-2.  **Set up your environment** (virtual environment recommended):
+
+2. **Set up a virtual environment** (recommended)
     ```bash
     python -m venv venv
-    source venv/bin/activate # On Windows use `venv\Scripts\activate`
+    # On Linux/macOS
+    source venv/bin/activate
+    # On Windows
+    venv\Scripts\activate
     ```
-3.  **Install dependencies:**
+
+3. **Install PyTorch** based on your system configuration  
+   (see [PyTorch](https://pytorch.org/get-started/locally/) to choose the correct version for your machine)
+    ```bash
+    pip install torch --index-url https://download.pytorch.org/whl/cu126
+    ```
+
+4. **Install other dependencies**
     ```bash
     pip install -r requirements.txt
     ```
@@ -76,7 +98,7 @@ Instead of processing the *entire* spectrogram, ESO:
 
 *   **Using the GUI:**
     ```bash
-    python path/to/your/gui_launcher.py # TODO
+    python path/to/your/repository/eso_app.py 
     ```
     The GUI provides options to select data, configure hyperparameters, run ESO, and monitor progress (including TensorBoard).
 

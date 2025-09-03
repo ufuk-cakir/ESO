@@ -2,16 +2,11 @@ from glob import glob
 import os
 import numpy as np
 import random
-import librosa.display
 import librosa
-from xml.dom import minidom
 from scipy import signal
 from random import randint
 import pickle
-from matplotlib import pyplot as plt
 import pandas as pd
-import math
-import datetime
 from pathlib import Path
 
 from .AnnotationReader import *
@@ -239,7 +234,7 @@ class Preprocessing:
         """
         if not self.apply_preprocessing:
             f_min = 0
-            f_max = 11000
+            f_max = 5000
         else:
             f_min = self.f_min
             f_max = self.f_max
@@ -755,7 +750,7 @@ class Preprocessing:
                         audio_amps, self.lowpass_cutoff, self.nyquist_rate
                     )
                     # Downsample
-                    amplitudes, sample_rate = self._downsample_file(
+                    amplitudes, sample_rate = self.downsample_file(
                         filtered, original_sample_rate, self.downsample_rate
                     )
                     del filtered
@@ -763,7 +758,7 @@ class Preprocessing:
                 else:
                     
                     if original_sample_rate!=self.sample_rate_unpreprocessed: 
-                        amplitudes, sample_rate = self._downsample_file(
+                        amplitudes, sample_rate = self.downsample_file(
                         audio_amps, original_sample_rate, self.sample_rate_unpreprocessed
                     )
                     else :
@@ -883,6 +878,11 @@ class Preprocessing:
 
         with open(Path(self.species_folder, "DataFiles", "validation.txt"), "w") as f:
             f.write("\n".join(validation_files))
+
+    def check_distribution(self, Y):
+        unique, counts = np.unique(Y, return_counts=True)
+        original_distribution = dict(zip(unique, counts))
+        return original_distribution
 
 
 

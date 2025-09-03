@@ -1,14 +1,4 @@
 {
-    "data": {
-        "species_folder": "/Users/cakir/Downloads/Gibbons",
-        "force_recreate_dataset": false,
-        "keep_in_memory": false,
-        "reshuffle": false,
-        "train_size": 0.7,
-        "test_size": 0.2,
-        "positive_class": "gibbon",
-        "negative_class": "no-gibbon"
-    },
     "algorithm": {
         "max_generations": 100
     },
@@ -19,6 +9,16 @@
     },
     "selection_operator": {
         "tournament_size": 5
+    },
+    "data": {
+        "force_recreate_dataset": false,
+        "keep_in_memory": false,
+        "reshuffle": false,
+        "train_size": 0.7,
+        "test_size": 0.2,
+        "positive_class": "gibbon",
+        "negative_class": "no-gibbon",
+        "species_folder": "C:/Users/loren/Documents/Postdoc/ESO_project/Data"
     },
     "preprocessing": {
         "sample_rate": 32000,

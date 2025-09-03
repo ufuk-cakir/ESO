@@ -64,7 +64,10 @@ class Chromosome:
         logger=None,
     ):
         self.results_path=results_path
-        self.num_genes = num_genes
+        if num_genes== -1 : 
+            self.num_genes = None 
+        else :
+            self.num_genes = num_genes
         self._min_num_genes = min_num_genes
         self._max_num_genes = max_num_genes
         self.logger = logger
@@ -82,6 +85,9 @@ class Chromosome:
         self._gene_args = gene_args
         self.stack = stack
         self._init_chromosome()
+
+
+            
 
     def _init_chromosome(self):
         """Initialize the chromosome

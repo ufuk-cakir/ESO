@@ -1,4 +1,3 @@
-
 from copy import deepcopy
 from eso.model.data import Data
 from eso.model.model import Model
@@ -92,6 +91,7 @@ class ESO:
         results_path="results",
         progress_handler=None,
     ):
+        
         self.logger = setup_logger(
             logger=logger, log_path=log_path, log_level=log_level, name="eso"
         )
@@ -132,15 +132,19 @@ class ESO:
         self._all_time_best_fitness = -np.inf
         self._best_chromosome = None
 
-        if self.config.gene.band_height is not None :
+        # Allow -1 as a special value for the GUI, meaning "automatic sizing"
+        if self.config.gene.band_height == -1:
+            self.config.gene.band_height = None
+
+        if self.config.gene.band_height is not None:
             self.band_height_fixed=True 
         else : self.band_height_fixed = False 
 
-        if self.config.chromosome.num_genes is not None : 
+        if self.config.chromosome.num_genes is not None and self.config.chromosome.num_genes != -1 : 
             self.nb_genes_fixed = True 
         else : self.nb_genes_fixed = False
 
-        if self.config.gene.band_position is not None : 
+        if self.config.gene.band_position is not None and self.config.gene.band_position != -1 : 
             self.band_position_fixed = True
         else : self.band_position_fixed = False 
         
@@ -263,11 +267,14 @@ class ESO:
     def _check_minimum_image_shape(self):
         minimum_shape = self._minimum_input_shape
         minimum_image_height = minimum_shape[0]
+        
+        
+        
         if self.config.chromosome.min_num_genes != -1:
             min_num_genes = self.config.chromosome.min_num_genes
         else:
             min_num_genes = self.config.chromosome.num_genes
-        if self.config.gene.band_height is None:
+        if self.config.gene.band_height is None :
             min_height = self.config.gene.min_height
         else:
             min_height = self.config.gene.band_height
@@ -599,8 +606,8 @@ class ESO:
 
     def save(self):
         self._save_results()
-        with open(os.path.join(self.results_path, "eso.pkl"), "wb") as output_file:
-            pickle.dump(self, output_file)
+        #with open(os.path.join(self.results_path, "eso.pkl"), "wb") as output_file:
+          #  pickle.dump(self, output_file)
 
     def _save_results(self):
         self.population.save(os.path.join(self.results_path, "population"))
@@ -615,12 +622,12 @@ class ESO:
 
     
     
-    def evaluate(self, test_type="simple", overlap=0.25, nb_to_group=2, threshold=0.8 ,save_name=None, force_calc_amplitudes=False):
+    def evaluate(self, test_type="simple", overlap=0.25, nb_to_group=2, threshold=0.8 ,save_name=None, force_calc_spectrograms=False):
         starting = datetime.now()
         
         
-        f_baseline, confusion_matrix_baseline, baseline_params, baseline_image_shape, baseline_pixels, baseline_execution_time = self._evaluate_model(model_type="baseline", test_type=test_type, overlap=overlap, nb_to_group=nb_to_group, force_calc_amplitudes=force_calc_amplitudes, threshold=threshold)
-        f_chromosome, confusion_matrix_chromosome, chromosome_params, chromosome_image_shape, chromosome_pixels, chromosome_execution_time = self._evaluate_model(model_type="chromosome", test_type=test_type, overlap=overlap, nb_to_group=nb_to_group, force_calc_amplitudes=force_calc_amplitudes, threshold=threshold)
+        f_baseline, confusion_matrix_baseline, baseline_params, baseline_image_shape, baseline_pixels, baseline_execution_time = self._evaluate_model(model_type="baseline", test_type=test_type, overlap=overlap, nb_to_group=nb_to_group, force_calc_spectrograms=force_calc_spectrograms, threshold=threshold)
+        f_chromosome, confusion_matrix_chromosome, chromosome_params, chromosome_image_shape, chromosome_pixels, chromosome_execution_time = self._evaluate_model(model_type="chromosome", test_type=test_type, overlap=overlap, nb_to_group=nb_to_group, force_calc_spectrograms=force_calc_spectrograms, threshold=threshold)
         
         
         # Make confusion matrix into 1d string
@@ -711,7 +718,7 @@ class ESO:
             
         
     
-    def _evaluate_model(self, model_type="baseline",test_type="presegmented_dataset", overlap=0.25, nb_to_group=2, threshold=0.8, force_calc_amplitudes=False):
+    def _evaluate_model(self, model_type="baseline",test_type="presegmented_dataset", overlap=0.25, nb_to_group=2, threshold=0.8, force_calc_spectrograms=False):
         if model_type == "baseline":
             self.logger.info(
                 "Evaluate performance of the baseline model on the testing dataset"
@@ -730,7 +737,8 @@ class ESO:
                 overlap=overlap, 
                 nb_to_group=nb_to_group,
                 threshold=threshold, 
-                force_calc_amplitudes=force_calc_amplitudes,
+                force_calc_spectrograms=force_calc_spectrograms,
+                logger=self.logger,
             )
 
         else:
@@ -760,7 +768,8 @@ class ESO:
                 threshold=threshold,
                 chromosome=chromosome,
                 apply_preprocessing=False,
-                force_calc_amplitudes=force_calc_amplitudes,
+                force_calc_spectrograms=force_calc_spectrograms,
+                logger=self.logger,
             )
 
         return evaluation.run(model, test_type=test_type)

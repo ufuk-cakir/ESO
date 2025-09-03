@@ -18,11 +18,11 @@ class SelectionOperator:
     def select_parents(self, population: Population) -> list:
         parent1 = self.select_one_parent(population)
         parent2 = self.select_one_parent(population)
-        print("Selected parents:", parent1, parent2)
+
         # Ensure that parent1 and parent2 are distinct individuals.
-        
-        while parent1 is parent2:
+        while parent1 == parent2:
             parent2 = self.select_one_parent(population)
+
         return parent1, parent2
 
     def select_one_parent(self, population: Population):
@@ -39,7 +39,7 @@ class SelectionOperator:
         if not population:
             raise ValueError("Population is empty")
         
-        if self.tournament_size >= population.pop_size :
+        if self.tournament_size > population.pop_size :
             raise ValueError(
                 f"The tournament size has to be smaller than the population size {population.pop_size}"
             )
@@ -48,13 +48,13 @@ class SelectionOperator:
         chromosomes = population.chromosomes
 
         # Randomly select `self.tournament_size` individuals from the population.
-        
+          
         ids = np.random.choice(
             chromosomes, size=self.tournament_size, replace=False)
-        
-        print
+
         # Find the individual with the highest fitness.
         best = max(ids, key=lambda x: x.get_fitness())
 
         return best
+
 

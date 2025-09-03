@@ -1,8 +1,74 @@
 {
-  "algorithm": {
+  "ESO algorithm": {
     "max_generations": {
-      "value": 100,
+      "value": 10,
       "description": "The maximum number of generations for the genetic algorithm.",
+      "type": "int"
+    }
+  },
+  "population": {
+    "pop_size": {
+      "value": 30,
+      "description": "Size of the population in the genetic algorithm.",
+      "type": "int"
+    }
+  },
+  "chromosome": {
+    "num_genes": {
+      "value": -1,
+      "description": "Number of genes in a chromosome when using fixed number of genes per chromosome. Use -1 to disable this option.",
+      "type": "int"
+    },
+    "min_num_genes": {
+      "value": 0,
+      "description": "Minimum number of genes in a chromosome.",
+      "type": "int"
+    },
+    "max_num_genes": {
+      "value": 10,
+      "description": "Maximum number of genes in a chromosome.",
+      "type": "int"
+    },
+    "stack": {
+      "value": false,
+      "description": "If True, the frequency bands are stacked, else there are combined.",
+      "type": "bool"
+    },
+    "lambda_1": {
+      "value": 0.7,
+      "description": "Weight of the accuracy metric in the fitness function.",
+      "type": "float"
+    },
+    "lambda_2": {
+      "value": 0.3,
+      "description": "Weight of the number of parameters in the fitness function.",
+      "type": "float"
+    }
+  },
+  "gene": {
+    "min_position": {
+      "value": 0,
+      "description": "Minimum position value for genes.",
+      "type": "int"
+    },
+    "max_position": {
+      "value": -1,
+      "description": "Maximum position value for genes. Use -1 to set the spectrogram height as the maximum position.",
+      "type": "int"
+    },
+    "min_height": {
+      "value": 1,
+      "description": "Minimum height value for genes.",
+      "type": "int"
+    },
+    "max_height": {
+      "value": 10,
+      "description": "Maximum height value for genes.",
+      "type": "int"
+    },
+    "band_height": {
+      "value": -1,
+      "description": "Set a fixed height for the band. Use -1 for different sizing.",
       "type": "int"
     }
   },
@@ -74,7 +140,7 @@
   },
   "preprocessing": {
     "sample_rate": {
-      "value": 32000,
+      "value": 9600,
       "description": "recording frequency of the audio files.",
       "type": "int"
     },
@@ -99,7 +165,7 @@
       "type": "int"
     },
     "nb_negative_class": {
-      "value": 20,
+      "value": 10,
       "description": "Number of negative class samples.",
       "type": "int"
     },
@@ -129,72 +195,16 @@
       "type": "int"
     },
     "f_min": {
-      "value": 4000,
+      "value": 0,
       "description": "Minimum frequency for Mel spectrogram.",
       "type": "int"
     },
     "f_max": {
-      "value": 9000,
+      "value": 2000,
       "description": "Maximum frequency for Mel spectrogram.",
       "type": "int"
     }
-  },
-  "population": {
-    "pop_size": {
-      "value": 5,
-      "description": "Size of the population in the genetic algorithm.",
-      "type": "int"
-    }
-  },
-  "gene": {
-    "min_position": {
-      "value": 0,
-      "description": "Minimum position value for genes.",
-      "type": "int"
-    },
-    "max_position": {
-      "value": -1,
-      "description": "Maximum position value for genes.",
-      "type": "int"
-    },
-    "min_height": {
-      "value": 1,
-      "description": "Minimum height value for genes.",
-      "type": "int"
-    },
-    "max_height": {
-      "value": 10,
-      "description": "Maximum height value for genes.",
-      "type": "int"
-    }
-  },
-  "chromosome": {
-    "num_genes": {
-      "value": 4,
-      "description": "Number of genes in a chromosome.",
-      "type": "int"
-    },
-    "min_num_genes": {
-      "value": -1,
-      "description": "Minimum number of genes in a chromosome.",
-      "type": "int"
-    },
-    "max_num_genes": {
-      "value": -1,
-      "description": "Maximum number of genes in a chromosome.",
-      "type": "int"
-    },
-    "lambda_1": {
-      "value": 0.5,
-      "description": "Lambda 1 parameter for the genetic algorithm.",
-      "type": "float"
-    },
-    "lambda_2": {
-      "value": 0.5,
-      "description": "Lambda 2 parameter for the genetic algorithm.",
-      "type": "float"
-    }
-  },
+  },  
   "model": {
     "optimizer_name": {
       "value": "adam",
@@ -231,5 +241,42 @@
       "description": "Metric used to evaluate model performance. Currently supported f1 and accuracy.",
       "type": "str"
     }
+  },
+  "cnn architecture": {
+    "conv_layers": {
+      "value": 1,
+      "description": "Number of convolutional layer(s)",
+      "type": "int"
+    },
+    "conv_filters": {
+      "value": 8,
+      "description": "Number of filters in each convolutional layer",
+      "type": "int"
+    },
+    "dropout_rate": {
+      "value": 0.5,
+      "description": "Drop-out rate",
+      "type": "float"
+    },
+    "conv_kernel": {
+      "value": 8,
+      "description": "kernel size of the convolutional filters",
+      "type": "int"
+    },
+    "max_pooling_size": {
+      "value": 4,
+      "description": "size of the max pooling operation",
+      "type": "int"
+    },
+    "fc_units": {
+      "value": 32,
+      "description": "number of neurons in the fully-connected layer(s)",
+      "type": "int"
+    },
+    "fc_layers": {
+      "value": 1,
+      "description": "number of fully-connected layer(s) excluding the output layer",
+      "type": "int"
+    }  
   }
 }
