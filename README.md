@@ -40,8 +40,9 @@ Instead of processing the *entire* spectrogram, ESO:
 4.  📈 **Optimizes** for a fitness function balancing classification performance (F1-score) and model simplicity (trainable parameters).
 5.  📉 **Outputs** the best chromosome, which defines narrow bands to be extracted and stacked, creating a highly compressed input for a much simpler CNN.
 
+![Figure1](https://github.com/ufuk-cakir/ESO/blob/main/images/gene-chromosome.pdf)
+
 <p align="center">
-  ![Figure1](https://github.com/ufuk-cakir/ESO/blob/main/images/gene-chromosome.pdf)
   <img src="images/gene-chromosome.pdf" alt="Figure 1 from paper showing ESO concept" width="600"/>
   <br/><em>Concept from Figure 1: Genes define bands, chromosomes collect genes, bands are stacked for the CNN.</em>
 </p>
