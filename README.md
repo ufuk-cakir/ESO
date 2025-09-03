@@ -62,7 +62,8 @@ Instead of processing the *entire* spectrogram, ESO:
 ### Example Applications 🔍
 
 
-<img width="1546" height="1059" alt="eso results" src="https://github.com/user-attachments/assets/737fb842-f784-4d6c-b5f1-0fd0476e109d" />
+
+<img width="1920" height="1080" alt="eso result" src="https://github.com/user-attachments/assets/ad65bc95-016a-4436-ab3c-8b441267198f" />
 
 
 ### Getting Started 🛠️
