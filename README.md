@@ -40,7 +40,8 @@ Instead of processing the *entire* spectrogram, ESO:
 4.  📈 **Optimizes** for a fitness function balancing classification performance (F1-score) and model simplicity (trainable parameters).
 5.  📉 **Outputs** the best chromosome, which defines narrow bands to be extracted and stacked, creating a highly compressed input for a much simpler CNN.
 
-[Figure gene chromosome.pdf](https://github.com/user-attachments/files/22117192/Figure.gene.chromosome.pdf)
+
+<img width="1665" height="845" alt="eso gene chromosome" src="https://github.com/user-attachments/assets/2f1df798-d606-49b6-8c77-3a3481d0a4ef" />
 
 
 <p align="center">
@@ -57,6 +58,11 @@ Instead of processing the *entire* spectrogram, ESO:
 *   🐍 Usable as a **Python package**.
 *   🖥️ Includes an easy-to-use **Graphical User Interface (GUI)**.
 *   📊 **TensorBoard** integration for monitoring training progress.
+
+### Example Applications 🔍
+
+<img width="1546" height="1063" alt="Preprocessed" src="https://github.com/user-attachments/assets/99d2e0f1-029a-4be3-8321-21f229efc1b0" />
+
 
 ### Getting Started 🛠️
 
