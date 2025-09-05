@@ -57,6 +57,8 @@ Instead of processing the *entire* spectrogram, ESO:
 
 ### Getting Started 🛠️
 
+⚠️ **Warning:** ESO requires Python **< 3.13**. Please use Python 3.12 or earlier.
+
 1. **Clone the repository**
     ```bash
     git clone https://github.com/ufuk-cakir/ESO.git

@@ -94,7 +94,7 @@ sphinxcontrib-htmlhelp==2.1.0
 sphinxcontrib-jsmath==1.0.1
 sphinxcontrib-qthelp==2.0.0
 sphinxcontrib-serializinghtml==2.0.0
-sympy==1.13.1
+sympy==1.14.0
 tensorboard==2.19.0
 tensorboard-data-server==0.7.2
 threadpoolctl==3.6.0

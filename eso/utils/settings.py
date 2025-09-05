@@ -55,6 +55,8 @@ class PreprocessingConfig(BaseConfig):
     n_mels: int = 128
     f_min: int = 4000
     f_max: int = 9000
+    f_min_chromosome: int = 0
+    f_max_chromosome: int = 5000
 
 
 @dataclass
