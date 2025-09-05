@@ -68,6 +68,8 @@ Instead of processing the *entire* spectrogram, ESO:
 
 ### Getting Started 🛠️
 
+⚠️ **Warning:** ESO requires Python **< 3.13**. Please use Python 3.12 or earlier.
+
 #### Data Structure 
 
 Organize your data in a folder named `Data`, containing the acoustic recordings in a subfolder `Audio` and the corresponding annotations in a subfolder `Annotations`.  
