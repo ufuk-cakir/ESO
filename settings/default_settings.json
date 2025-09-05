@@ -62,7 +62,7 @@
       "type": "int"
     },
     "max_height": {
-      "value": 10,
+      "value": 16,
       "description": "Maximum height value for genes.",
       "type": "int"
     },

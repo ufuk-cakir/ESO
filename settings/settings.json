@@ -10,10 +10,10 @@
         "negative_class": "no-gibbon"
     },
     "ESO algorithm": {
-        "max_generations": 2
+        "max_generations": 10
     },
     "population": {
-        "pop_size": 10
+        "pop_size": 30
     },
     "chromosome": {
         "num_genes": -1,
@@ -53,7 +53,7 @@
         "f_min": 0,
         "f_max": 2000,
         "f_min_chromosome": 0,
-        "f_max_chromosome": 5000
+        "f_max_chromosome": 11000
     },
     "model": {
         "optimizer_name": "adam",
