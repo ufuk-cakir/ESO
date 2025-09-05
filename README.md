@@ -95,26 +95,56 @@ Data/
 
 2. **Set up a virtual environment** (recommended)
     ```bash
-    python -m venv venv
+    python -m venv myenv
     # On Linux/macOS
     source venv/bin/activate
     # On Windows
     venv\Scripts\activate
     ```
 
-3. **Install PyTorch** based on your system configuration  
+    Or with conda
+    ```bash
+    conda create --name myenv python==3.12 pip
+    conda activate myenv
+    ```
+
+4. **Install PyTorch** based on your system configuration  
    (see [PyTorch](https://pytorch.org/get-started/locally/) to choose the correct version for your machine)
     ```bash
     pip install torch --index-url https://download.pytorch.org/whl/cu126
     ```
 
-4. **Install other dependencies**
+5. **Install other dependencies**
     ```bash
     pip install -r requirements.txt
     ```
 
 #### Install Eso from pip 
+1. **Set up a virtual environment** (recommended)
+    ```bash
+    python -m venv myenv
+    # On Linux/macOS
+    source venv/bin/activate
+    # On Windows
+    venv\Scripts\activate
+    ```
 
+    Or with conda
+    ```bash
+    conda create --name myenv python==3.12 pip
+    conda activate myenv
+    ```
+
+2. **Install PyTorch** based on your system configuration  
+   (see [PyTorch](https://pytorch.org/get-started/locally/) to choose the correct version for your machine)
+    ```bash
+    pip install torch --index-url https://download.pytorch.org/whl/cu126
+    ```
+
+3. **Install ESO with pip**
+    ```bash
+    pip install eso
+    ```
 
 
 ### Running ESO 🏃
@@ -126,7 +156,7 @@ Data/
     The GUI provides options to select data, configure hyperparameters, run ESO, and monitor progress (including TensorBoard).
 
 *   **As a Python Package:**
-    Import the necessary modules from the `eso` package in your Python scripts. (Refer to the documentation or example scripts within the repository for specific usage details).
+    Import the necessary modules from the `eso` package in your Python scripts. (Refer to the documentation or [example scripts](https://github.com/ufuk-cakir/ESO/blob/main/notebooks/Eso_notebook_demo.ipynb) within the repository for specific usage details).
 
 ### Citation ✍️
 
