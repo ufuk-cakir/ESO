@@ -68,14 +68,25 @@ Instead of processing the *entire* spectrogram, ESO:
 
 ### Getting Started 🛠️
 
-## data structure 
-```
-data/ # Data directory categorized by species.
-  ├── bats/
-      │ ├── annotations/
-      │ ├── audio/
-```
+#### Data Structure 
 
+Organize your data in a folder named `Data`, containing the acoustic recordings in a subfolder `Audio` and the corresponding annotations in a subfolder `Annotations`.  
+Each annotation file must have the **same name** as its associated audio file.
+
+```
+Data/
+├── Audio/
+│     ├──HGSM3AB_0+1_20160303_060100
+│     ├──HGSM3AB_0+1_20160304_060000
+│     ├──HGSM3AB_0+1_20160305_055900
+│     └── ...
+└── Annotations/
+      ├──HGSM3AB_0+1_20160303_060100
+      ├──HGSM3AB_0+1_20160304_060000
+      ├──HGSM3AB_0+1_20160305_055900
+      └── ...
+```
+#### Install Eso from the github 
 1. **Clone the repository**
     ```bash
     git clone https://github.com/ufuk-cakir/ESO.git
@@ -101,6 +112,10 @@ data/ # Data directory categorized by species.
     ```bash
     pip install -r requirements.txt
     ```
+
+#### Install Eso from pip 
+
+
 
 ### Running ESO 🏃
 
