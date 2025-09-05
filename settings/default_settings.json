@@ -20,7 +20,7 @@
       "type": "int"
     },
     "min_num_genes": {
-      "value": 0,
+      "value": 1,
       "description": "Minimum number of genes in a chromosome.",
       "type": "int"
     },
@@ -62,7 +62,7 @@
       "type": "int"
     },
     "max_height": {
-      "value": 10,
+      "value": 16,
       "description": "Maximum height value for genes.",
       "type": "int"
     },
@@ -202,6 +202,16 @@
     "f_max": {
       "value": 2000,
       "description": "Maximum frequency for Mel spectrogram.",
+      "type": "int"
+    },
+    "f_min_chromosome": {
+      "value": 0,
+      "description": "Minimum spectrogram frequency to display for the chromosome when no preprocessing is applied.",
+      "type": "int"
+    },
+    "f_max_chromosome": {
+      "value": 11000,
+      "description": "Maximum spectrogram frequency to display for the chromosome when no preprocessing is applied.",
       "type": "int"
     }
   },  

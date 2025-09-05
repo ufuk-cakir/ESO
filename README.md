@@ -68,6 +68,28 @@ Instead of processing the *entire* spectrogram, ESO:
 
 ### Getting Started 🛠️
 
+⚠️ **Warning:** ESO requires Python **< 3.13**. Please use Python 3.12 or earlier.
+
+#### Data Structure 
+
+Organize your data in a folder named `Data`, containing the acoustic recordings in a subfolder `Audio` and the corresponding annotations in a subfolder `Annotations`.  
+Each annotation file must have the **same name** as its associated audio file.
+
+```
+Data/
+├── Audio/
+│     ├──HGSM3AB_0+1_20160303_060100
+│     ├──HGSM3AB_0+1_20160304_060000
+│     ├──HGSM3AB_0+1_20160305_055900
+│     └── ...
+└── Annotations/
+      ├──HGSM3AB_0+1_20160303_060100
+      ├──HGSM3AB_0+1_20160304_060000
+      ├──HGSM3AB_0+1_20160305_055900
+      └── ...
+```
+#### Install Eso from the github 
+
 1. **Clone the repository**
     ```bash
     git clone https://github.com/ufuk-cakir/ESO.git
@@ -76,23 +98,58 @@ Instead of processing the *entire* spectrogram, ESO:
 
 2. **Set up a virtual environment** (recommended)
     ```bash
-    python -m venv venv
+    # On Linux/macOS
+    python3.12 -m venv myenv
+    source venv/bin/activate
+    # On Windows : make sure your venv uses the correct Python version executable (3.12).
+    python -m venv myenv
+    venv\Scripts\activate
+    ```
+
+    Or with conda
+    ```bash
+    conda create --name myenv python==3.12 pip
+    conda activate myenv
+    ```
+
+4. **Install PyTorch** based on your system configuration  
+   (see [PyTorch](https://pytorch.org/get-started/locally/) to choose the correct version for your machine)
+    ```bash
+    pip install torch --index-url https://download.pytorch.org/whl/cu126
+    ```
+
+5. **Install other dependencies**
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+#### Install Eso from pip 
+1. **Set up a virtual environment** (recommended)
+    ```bash
+    python -m venv myenv
     # On Linux/macOS
     source venv/bin/activate
     # On Windows
     venv\Scripts\activate
     ```
 
-3. **Install PyTorch** based on your system configuration  
+    Or with conda
+    ```bash
+    conda create --name myenv python==3.12 pip
+    conda activate myenv
+    ```
+
+2. **Install PyTorch** based on your system configuration  
    (see [PyTorch](https://pytorch.org/get-started/locally/) to choose the correct version for your machine)
     ```bash
     pip install torch --index-url https://download.pytorch.org/whl/cu126
     ```
 
-4. **Install other dependencies**
+3. **Install ESO with pip**
     ```bash
-    pip install -r requirements.txt
+    pip install eso
     ```
+
 
 ### Running ESO 🏃
 
@@ -103,7 +160,7 @@ Instead of processing the *entire* spectrogram, ESO:
     The GUI provides options to select data, configure hyperparameters, run ESO, and monitor progress (including TensorBoard).
 
 *   **As a Python Package:**
-    Import the necessary modules from the `eso` package in your Python scripts. (Refer to the documentation or example scripts within the repository for specific usage details).
+    Import the necessary modules from the `eso` package in your Python scripts. (Refer to the documentation or [example scripts](https://github.com/ufuk-cakir/ESO/blob/main/notebooks/Eso_notebook_demo.ipynb) within the repository for specific usage details).
 
 ### Citation ✍️
 

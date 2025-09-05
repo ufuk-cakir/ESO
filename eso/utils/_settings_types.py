@@ -44,6 +44,8 @@ types = {
         "n_mels": int,
         "f_min": int,
         "f_max": int,
+        "f_min_chromosome": int,
+        "f_max_chromosome": int,
         "species_folder": str,
         "keep_in_memory": bool,
     },

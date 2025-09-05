@@ -29,6 +29,8 @@ class Preprocessing:
         n_mels : int,
         f_min : int,
         f_max : int,
+        f_min_chromosome: int,
+        f_max_chromosome: int,
         file_type : str,
         audio_extension : str,
         apply_preprocessing: bool=True,
@@ -64,9 +66,13 @@ class Preprocessing:
         n_mels : int
             The number of mel bands to use in the spectrogram.
         f_min : int
-            The minimum frequency for the mel filter bank.
+            Minimum spectrogram frequency to display.
         f_max : int
-            The maximum frequency for the mel filter bank.
+            Maximum spectrogram frequency to display.
+        f_min_chromosome: int
+            Minimum spectrogram frequency to display for the chromosome when no preprocessing is applied.
+        f_max_chromosome: int,
+            Maximum spectrogram frequency to display for the chromosome when no preprocessing is applied.
         file_type : str
             The type of annotation files to process (e.g., '.svl').
         audio_extension : str
@@ -94,6 +100,8 @@ class Preprocessing:
         self.n_mels = n_mels
         self.f_min = f_min
         self.f_max = f_max
+        self.f_min_chromosome=f_min_chromosome
+        self.f_max_chromosome=f_max_chromosome
         self.file_type = file_type
         self.audio_extension = audio_extension
         self.apply_preprocessing = apply_preprocessing
@@ -233,8 +241,8 @@ class Preprocessing:
             A 2D NumPy array representing the normalized mel-spectrogram image.
         """
         if not self.apply_preprocessing:
-            f_min = 0
-            f_max = 5000
+            f_min = self.f_min_chromosome
+            f_max = self.f_max_chromosome
         else:
             f_min = self.f_min
             f_max = self.f_max

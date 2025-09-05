@@ -13,13 +13,13 @@ build-backend = "setuptools.build_meta"
 # single source of truth for eso's version
 [project]
 name = "eso"
-description = "Add short description here"
+description = "Evolutionary Spectrogram Optimisation : optimise the selection and size of frequency bands of spectrograms to maximise deep learning classification accuracy while minimising the model's size using genetic algorithms"
 readme = "README.md"
 maintainers = [
     { name = "Ufuk Çakır", email = "your@email.com" },
 ]
 dynamic = ["version"]
-requires-python = ">=3.8"
+requires-python = ">=3.10,<3.13"
 license = { text = "MIT" }
 classifiers = [
     "Programming Language :: Python :: 3",
@@ -28,18 +28,20 @@ classifiers = [
 ]
 dependencies = [
     "librosa==0.10.1",
-    "matplotlib>=3.7.5",
-    "numpy>=1.24.4",
+    "matplotlib>=3.10.1",
+    "numpy>=2.2.5",
     "opencv-python-headless>=4.8.1.78",
-    "pandas>=2.0.3",
-    "pre-commit>=3.5.0",
+    "pandas>=2.2.3",
+    "pre-commit>=4.2.0",
     "pyqt5>=5.15.11",
     "pytest-cov>=5.0.0",
     "pytest-mock>=3.14.0",
-    "scikit-learn>=1.3.2",
-    "setuptools>=75.3.2",
-    "tensorboard>=2.14.0",
-    "torch>=2.5.1",
+    "scikit-learn>=1.6.1",
+    "setuptools>=79.0.0",
+    "sympy>=1.14.0",
+    "resampy>=0.4.3",
+    "tensorboard>=2.19.0",
+    "torch>=2.8.0",
     "tqdm>=4.67.1",
     "yattag>=1.16.1",
 ]
@@ -73,8 +75,8 @@ packages = [
 # the version control system. For more information see its documentation:
 # https://github.com/pypa/setuptools_scm
 [tool.setuptools_scm]
-version_scheme = "post-release"
-local_scheme = "node-and-date"
+version_scheme = "release-branch-semver"
+local_scheme = "no-local-version"
 write_to = "eso/_version.py"
 
 # The following is the configuration for the pytest test suite
