@@ -97,10 +97,11 @@ Data/
 
 2. **Set up a virtual environment** (recommended)
     ```bash
-    python -m venv myenv
     # On Linux/macOS
+    python3.12 -m venv myenv
     source venv/bin/activate
-    # On Windows
+    # On Windows : make sure your venv uses the correct Python version executable (3.12).
+    python -m venv myenv
     venv\Scripts\activate
     ```
 
