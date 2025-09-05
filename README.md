@@ -68,6 +68,14 @@ Instead of processing the *entire* spectrogram, ESO:
 
 ### Getting Started 🛠️
 
+## data structure 
+```
+data/ # Data directory categorized by species.
+  ├── bats/
+      │ ├── annotations/
+      │ ├── audio/
+```
+
 1. **Clone the repository**
     ```bash
     git clone https://github.com/ufuk-cakir/ESO.git
