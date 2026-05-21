@@ -13,7 +13,7 @@ def test_genetic_operator_initialization(default_rates):
     assert op._crossover_rate == default_rates["crossover_rate"]
     assert op._mutation_rate == default_rates["mutation_rate"]
     assert op._reproduction_rate == default_rates["reproduction_rate"]
-    assert op._mutation_hight_range == default_rates["mutation_height_range"]
+    assert op._mutation_height_range == default_rates["mutation_height_range"]
     assert op._mutation_position_range == default_rates["mutation_position_range"]
 
 
@@ -25,6 +25,9 @@ def test_genetic_operator_initialization_invalid_rates():
         "reproduction_rate": 0.1,  # Sum is 0.9
         "mutation_height_range": 2,
         "mutation_position_range": 5,
+        "band_height_fixed": False,
+        "band_position_fixed": False,
+        "spec_height": 100,
     }
     with pytest.raises(ValueError, match="sum of mutation_rate.*must be 1"):
         GeneticOperator(**invalid_rates)
@@ -311,7 +314,8 @@ def test_mutate_dispatch_multi_channel(
     mock_height = mocker.patch.object(genetic_operator, "_mutate_gene_height")
     mock_both = mocker.patch.object(genetic_operator, "_mutate_gene")
 
-    # No need to mock random.randint here, as the channel check bypasses it
+    # Force a deterministic, non-zero mutation: pick gene 0, shift position by +3
+    mocker.patch("random.randint", side_effect=[0, 3])
     mutated = genetic_operator.mutate(chromosome_multi_channel)
 
     assert mutated != chromosome_multi_channel  # Ensure mutation happened

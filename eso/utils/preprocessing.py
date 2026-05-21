@@ -89,7 +89,7 @@ class Preprocessing:
         self.nb_negative_class = nb_negative_class
         self.audio_path = Path(self.species_folder, "Audio")
         self.annotations_path = Path(self.species_folder, "Annotations")
-        self.saved_data_path = Path(self.species_folder, "Saved_Data")
+        self.saved_data_path = Path(self.species_folder, "SavedData")
         self.training_files = Path(self.species_folder, "DataFiles", "TrainingFiles.txt")      
         self.n_mels = n_mels
         self.f_min = f_min

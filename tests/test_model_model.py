@@ -13,9 +13,24 @@ def sample_input_shape():
 
 
 @pytest.fixture
-def sample_model_params():
+def sample_architecture_args():
+    """Small CNN architecture compatible with a 28x28 input."""
+    return {
+        "conv_layers": 1,
+        "conv_filters": 8,
+        "dropout_rate": 0.5,
+        "conv_kernel": 8,
+        "max_pooling_size": 4,
+        "fc_units": 32,
+        "fc_layers": 1,
+    }
+
+
+@pytest.fixture
+def sample_model_params(sample_architecture_args):
     """Common model parameters for tests."""
     return {
+        "results_path": ".",
         "optimizer_name": "adam",
         "loss_function_name": "cross_entropy",
         "batch_size": 32,
@@ -23,6 +38,7 @@ def sample_model_params():
         "num_epochs": 5,
         "metric": "accuracy",
         "shuffle": True,
+        "architecture_args": sample_architecture_args,
     }
 
 
@@ -111,14 +127,15 @@ class TestModelTrainingAndEvaluation:
     def test_train(self, sample_model, sample_data):
         """Test model training."""
         X, Y = sample_data
-        losses = sample_model.train(X, Y)
-        assert len(losses) > 0
-        assert all(isinstance(loss, float) for loss in losses)
+        train_losses, val_losses = sample_model.train(X, Y, X, Y, save=False)
+        assert len(train_losses) > 0
+        assert len(val_losses) > 0
+        assert all(isinstance(loss, float) for loss in train_losses)
 
     def test_evaluate_accuracy(self, sample_model, sample_data):
         """Test model evaluation with accuracy metric."""
         X, Y = sample_data
-        sample_model.train(X, Y)  # Train first
+        sample_model.train(X, Y, X, Y, save=False)  # Train first
         score, metric_name = sample_model.evaluate(X, Y, metric="accuracy")
         assert isinstance(score, float)
         assert 0 <= score <= 1
@@ -127,7 +144,7 @@ class TestModelTrainingAndEvaluation:
     def test_evaluate_f1(self, sample_model, sample_data):
         """Test model evaluation with F1 metric."""
         X, Y = sample_data
-        sample_model.train(X, Y)  # Train first
+        sample_model.train(X, Y, X, Y, save=False)  # Train first
         score, metric_name = sample_model.evaluate(X, Y, metric="f1")
         assert isinstance(score, float)
         assert 0 <= score <= 1
@@ -142,7 +159,7 @@ class TestModelTrainingAndEvaluation:
     def test_evaluate_with_threshold(self, sample_model, sample_data):
         """Test evaluation with threshold parameter."""
         X, Y = sample_data
-        sample_model.train(X, Y)
+        sample_model.train(X, Y, X, Y, save=False)
         with pytest.raises(ValueError, match="mix of"):
             sample_model.evaluate(X, Y, threshold=0.5)
 
@@ -179,14 +196,18 @@ class TestModelSaveLoad:
     def test_load(self, sample_model):
         """Test loading model state."""
         model_dict = sample_model.get_model_dict()
+        arch = dict(sample_model._architecture)
+        input_shape = arch.pop("input_shape")
         new_model = Model(
-            input_shape=sample_model._architecture["input_shape"],
+            results_path=".",
+            input_shape=input_shape,
             optimizer_name="adam",
             loss_function_name="cross_entropy",
             batch_size=32,
             learning_rate=0.001,
             num_epochs=5,
             metric="accuracy",
+            architecture_args=arch,
         )
         new_model.load(model_dict)
 

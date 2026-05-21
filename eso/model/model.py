@@ -89,7 +89,6 @@ class Model:
         return cnn
     
     
-    @staticmethod
     def load(self, model_dict):
         self.cnn = BaseCNN(**model_dict["architecture"])
         self.cnn.load_state_dict(model_dict["state_dict"])
@@ -294,6 +293,8 @@ class Model:
             return (f1, "F1")
         elif metric == "accuracy":
             return (accuracy, "Accuracy")
+        else:
+            raise ValueError(f"Unsupported metric: {metric!r}. Use 'f1' or 'accuracy'.")
 
     def save_model(self, path, model_name):
         save_path = os.path.join(Path(path, model_name + "_cnn_state.pth"))

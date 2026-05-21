@@ -142,6 +142,9 @@ def default_rates():
         "reproduction_rate": 0.1,
         "mutation_height_range": 2,
         "mutation_position_range": 5,
+        "band_height_fixed": False,
+        "band_position_fixed": False,
+        "spec_height": 100,
     }
 
 

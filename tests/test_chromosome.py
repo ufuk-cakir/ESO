@@ -42,13 +42,16 @@ def stub_gene(monkeypatch):
 def test_min_num_greater_than_max_raises():
     with pytest.raises(ValueError):
         Chromosome(
-            num_genes=5,
+            results_path=".",
+            num_genes=-1,
             min_num_genes=10,
             max_num_genes=3,
             baseline_metric=0.0,
             baseline_parameters=1,
             gene_args={},
             model_args={},
+            architecture_args={},
+            stack=True,
         )
 
 
@@ -56,13 +59,16 @@ def test_random_num_genes(monkeypatch):
     # force np.random.randint to always pick 4
     monkeypatch.setattr(np.random, "randint", lambda a, b: 4)  # type: ignore
     c = Chromosome(
-        num_genes=0,  # gets overridden
+        results_path=".",
+        num_genes=-1,  # auto-randomize via np.random.randint
         min_num_genes=2,
         max_num_genes=10,
         baseline_metric=0.0,
         baseline_parameters=1,
         gene_args={},
         model_args={},
+        architecture_args={},
+        stack=True,
     )
     assert c.num_genes == 4
     assert len(c.get_genes()) == 4
@@ -70,6 +76,7 @@ def test_random_num_genes(monkeypatch):
 
 def test_sort_and_get_genes():
     c = Chromosome(
+        results_path=".",
         num_genes=3,
         min_num_genes=-1,
         max_num_genes=-1,
@@ -77,6 +84,8 @@ def test_sort_and_get_genes():
         baseline_parameters=1,
         gene_args={},
         model_args={},
+        architecture_args={},
+        stack=True,
     )
     # overwrite with unsorted dummy genes
     g1 = DummyGene(band_position=5)
@@ -96,6 +105,7 @@ def test_sort_and_get_genes():
 )
 def test_set_gene_valid(pos, band_pos, band_h):
     c = Chromosome(
+        results_path=".",
         num_genes=3,
         min_num_genes=-1,
         max_num_genes=-1,
@@ -103,6 +113,8 @@ def test_set_gene_valid(pos, band_pos, band_h):
         baseline_parameters=1,
         gene_args={},
         model_args={},
+        architecture_args={},
+        stack=True,
     )
 
     # grab the exact Gene instance that we'll mutate
@@ -134,6 +146,7 @@ def test_set_gene_valid(pos, band_pos, band_h):
 )
 def test_set_gene_invalid(args):
     c = Chromosome(
+        results_path=".",
         num_genes=3,
         min_num_genes=-1,
         max_num_genes=-1,
@@ -141,6 +154,8 @@ def test_set_gene_invalid(args):
         baseline_parameters=1,
         gene_args={},
         model_args={},
+        architecture_args={},
+        stack=True,
     )
     with pytest.raises(ValueError):
         c.set_gene(**args)
@@ -148,6 +163,7 @@ def test_set_gene_invalid(args):
 
 def test_get_info_contains_all_fields():
     c = Chromosome(
+        results_path=".",
         num_genes=2,
         min_num_genes=-1,
         max_num_genes=-1,
@@ -155,6 +171,8 @@ def test_get_info_contains_all_fields():
         baseline_parameters=1000,
         gene_args={},
         model_args={},
+        architecture_args={},
+        stack=True,
     )
     # stub some internals
     c._metric = 0.75
@@ -177,6 +195,7 @@ def test_get_info_contains_all_fields():
 
 def test_repr_and_str():
     c = Chromosome(
+        results_path=".",
         num_genes=1,
         min_num_genes=-1,
         max_num_genes=-1,
@@ -184,6 +203,8 @@ def test_repr_and_str():
         baseline_parameters=1,
         gene_args={},
         model_args={},
+        architecture_args={},
+        stack=True,
     )
     # stub one gene
     c._genes = [DummyGene(band_position=4, band_height=2)]  # type: ignore
@@ -196,6 +217,7 @@ def test_repr_and_str():
 
 def test_get_bands_stack_and_concat():
     c = Chromosome(
+        results_path=".",
         num_genes=2,
         min_num_genes=-1,
         max_num_genes=-1,
@@ -203,6 +225,8 @@ def test_get_bands_stack_and_concat():
         baseline_parameters=1,
         gene_args={},
         model_args={},
+        architecture_args={},
+        stack=True,
     )
     # create a fake spectrogram of shape (5, 3)
     spect = np.arange(15).reshape(5, 3)
@@ -225,6 +249,7 @@ def test_get_bands_stack_and_concat():
 
 def test_create_dataset():
     c = Chromosome(
+        results_path=".",
         num_genes=1,
         min_num_genes=-1,
         max_num_genes=-1,
@@ -232,6 +257,8 @@ def test_create_dataset():
         baseline_parameters=1,
         gene_args={},
         model_args={},
+        architecture_args={},
+        stack=True,
     )
 
     # stub _get_bands to tag each image
@@ -247,6 +274,7 @@ def test_create_dataset():
 
 def test_save_and_load(tmp_path):
     c = Chromosome(
+        results_path=str(tmp_path),
         num_genes=2,
         min_num_genes=-1,
         max_num_genes=-1,
@@ -254,6 +282,8 @@ def test_save_and_load(tmp_path):
         baseline_parameters=1,
         gene_args={},
         model_args={},
+        architecture_args={},
+        stack=True,
     )
     _ = tmp_path / "chromo.pkl"  # type: ignore
     c.save(str(tmp_path), "chromo")
@@ -268,13 +298,16 @@ def test_save_and_load(tmp_path):
 
 def test_save_model(tmp_path, monkeypatch):
     c = Chromosome(
-        num_genes=0,
+        results_path=str(tmp_path),
+        num_genes=1,
         min_num_genes=-1,
         max_num_genes=-1,
         baseline_metric=0.0,
         baseline_parameters=1,
         gene_args={},
         model_args={},
+        architecture_args={},
+        stack=True,
     )
     # stub a model state dict
     c._model_state_dict = {"foo": "bar"}
