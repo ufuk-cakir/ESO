@@ -293,6 +293,8 @@ class Model:
             return (f1, "F1")
         elif metric == "accuracy":
             return (accuracy, "Accuracy")
+        else:
+            raise ValueError(f"Unsupported metric: {metric!r}. Use 'f1' or 'accuracy'.")
 
     def save_model(self, path, model_name):
         save_path = os.path.join(Path(path, model_name + "_cnn_state.pth"))
