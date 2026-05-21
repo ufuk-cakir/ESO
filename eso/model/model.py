@@ -89,7 +89,6 @@ class Model:
         return cnn
     
     
-    @staticmethod
     def load(self, model_dict):
         self.cnn = BaseCNN(**model_dict["architecture"])
         self.cnn.load_state_dict(model_dict["state_dict"])
