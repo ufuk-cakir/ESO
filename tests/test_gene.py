@@ -21,13 +21,23 @@ class DummyRNG:
 def test_max_height_minus_one_raises():
     with pytest.raises(ValueError):
         Gene(
-            spec_height=10, min_position=0, max_position=9, min_height=1, max_height=-1
+            spec_height=10,
+            min_position=0,
+            max_position=9,
+            min_height=1,
+            max_height=-1,
+            minimum_gene_height=1,
         )
 
 
 def test_negative_min_and_max_position_and_height_normalize():
     g = Gene(
-        spec_height=5, min_position=-1, max_position=-1, min_height=-1, max_height=3
+        spec_height=5,
+        min_position=-1,
+        max_position=-1,
+        min_height=-1,
+        max_height=3,
+        minimum_gene_height=1,
     )
     # min_position → 0, max_position → spec_height
     assert 0 <= g.band_position <= 5 - g.band_height
@@ -39,7 +49,14 @@ def test_random_gene_uses_random_ints(monkeypatch):
     drng = DummyRNG(heights=[2], positions=[1])
     monkeypatch.setattr(random, "randint", drng.randint)
 
-    g = Gene(spec_height=10, min_position=0, max_position=9, min_height=1, max_height=5)
+    g = Gene(
+        spec_height=10,
+        min_position=0,
+        max_position=9,
+        min_height=1,
+        max_height=5,
+        minimum_gene_height=1,
+    )
     assert g.band_height == 2
     assert g.band_position == 1
 
@@ -55,6 +72,7 @@ def test_fixed_height_random_position(monkeypatch):
         max_position=8,
         min_height=1,
         max_height=5,
+        minimum_gene_height=1,
         band_position=None,
         band_height=4,
     )
@@ -74,6 +92,7 @@ def test_fixed_position_random_height(monkeypatch):
         max_position=9,
         min_height=1,
         max_height=5,
+        minimum_gene_height=1,
         band_position=3,
         band_height=None,
     )
@@ -85,16 +104,16 @@ def test_fixed_position_random_height(monkeypatch):
 
 def test_set_gene_valid_and_invalid():
     # valid
-    g = Gene(10, 0, 9, 1, 5, band_position=2, band_height=3)
+    g = Gene(10, 0, 9, 1, 5, 1, band_position=2, band_height=3)
     assert (g.band_position, g.band_height) == (2, 3)
 
     # invalid: sum exceeds max_position
     with pytest.raises(ValueError):
-        Gene(10, 0, 5, 1, 5, band_position=3, band_height=3)
+        Gene(10, 0, 5, 1, 5, 1, band_position=3, band_height=3)
 
 
 def test_getters_and_setters():
-    g = Gene(10, 0, 9, 1, 5, band_position=1, band_height=2)
+    g = Gene(10, 0, 9, 1, 5, 1, band_position=1, band_height=2)
     assert g.get_band_position() == 1
     assert g.get_band_height() == 2
 
@@ -112,7 +131,7 @@ def test_getters_and_setters():
 
 
 def test_str_and_repr():
-    g = Gene(5, 0, 4, 1, 3, band_position=1, band_height=2)
+    g = Gene(5, 0, 4, 1, 3, 1, band_position=1, band_height=2)
     assert str(g) == "(1, 2)"
     assert repr(g) == "Gene(1, 2)"
 
@@ -131,6 +150,7 @@ def test_gene():
         max_position=128,
         min_height=1,
         max_height=10,
+        minimum_gene_height=1,
         band_position=80,
         band_height=7,
     )
@@ -143,6 +163,7 @@ def test_gene():
         max_position=128,
         min_height=1,
         max_height=10,
+        minimum_gene_height=1,
         band_position=100,
     )
     print(f"Gene 3: {gene_3}")
@@ -154,6 +175,7 @@ def test_gene():
         max_position=128,
         min_height=1,
         max_height=10,
+        minimum_gene_height=1,
         band_height=9,
     )
     print(f"Gene 4: {gene_4}")
