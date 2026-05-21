@@ -1,0 +1,161 @@
+site_name: ESO
+site_description: Evolutionary Spectrogram Optimisation. Efficient passive acoustic monitoring via genetic algorithms.
+site_url: https://eso.readthedocs.io/
+repo_url: https://github.com/ufuk-cakir/ESO
+repo_name: ufuk-cakir/ESO
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  logo: https://raw.githubusercontent.com/ufuk-cakir/ufuk-cakir.github.io/7d1d9f2b3a8b7b3db0e6ecca77fbd7b332cd6c84/assets/images/eso%20logo.png
+  favicon: https://raw.githubusercontent.com/ufuk-cakir/ufuk-cakir.github.io/7d1d9f2b3a8b7b3db0e6ecca77fbd7b332cd6c84/assets/images/eso%20logo.png
+  icon:
+    repo: fontawesome/brands/github
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - navigation.footer
+    - navigation.indexes
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - search.share
+    - content.code.copy
+    - content.code.annotate
+    - content.tabs.link
+    - content.action.edit
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  font:
+    text: Inter
+    code: JetBrains Mono
+
+extra_css:
+  - stylesheets/extra.css
+
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/ufuk-cakir/ESO
+    - icon: fontawesome/solid/scroll
+      link: https://ml-for-rs.github.io/iclr2024/camera_ready/papers/51.pdf
+      name: ICLR 2024 ML4RS paper
+
+markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.snippets
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+plugins:
+  - search
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          paths: [.]
+          options:
+            docstring_style: numpy
+            docstring_section_style: table
+            show_root_heading: true
+            show_root_full_path: false
+            show_root_members_full_path: false
+            show_object_full_path: false
+            show_category_heading: false
+            show_if_no_docstring: true
+            show_source: true
+            show_bases: true
+            show_signature: true
+            show_signature_annotations: true
+            signature_crossrefs: true
+            separate_signature: true
+            line_length: 88
+            merge_init_into_class: true
+            members_order: source
+            heading_level: 2
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
+            show_docstring_parameters: true
+            show_docstring_returns: true
+            show_docstring_raises: true
+            show_docstring_attributes: true
+            show_docstring_examples: true
+            annotations_path: brief
+            filters:
+              - "!^_"
+              - "!^__"
+
+nav:
+  - Home: index.md
+  - Getting started:
+      - Installation: getting-started/installation.md
+      - First run: getting-started/first-run.md
+      - GUI: getting-started/gui.md
+  - How ESO works:
+      - Overview: concepts/overview.md
+      - Genes & chromosomes: concepts/genes-and-chromosomes.md
+      - Evolution loop: concepts/evolution.md
+      - Spectrogram preprocessing: concepts/preprocessing.md
+      - CNN training & fitness: concepts/cnn-training.md
+      - Evaluation: concepts/evaluation.md
+  - Configuration: configuration.md
+  - API reference:
+      - Overview: api/index.md
+      - eso.ESO: api/eso.md
+      - Genetic algorithm: api/ga.md
+      - Model & data: api/model.md
+      - Utilities: api/utils.md
+  - Citation: citation.md
