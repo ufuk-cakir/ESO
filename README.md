@@ -22,6 +22,13 @@ Optimising spectrogram inputs for efficient passive acoustic monitoring using ge
 
 ---
 
+## 📚 Documentation
+
+For installation instructions, usage examples, GUI guidance, and API reference, see the full documentation:
+
+👉 **[ESO Documentation](https://eso.readthedocs.io/)**
+
+
 ### The Challenge 🤔
 
 Traditional bioacoustic monitoring with Convolutional Neural Networks (CNNs) often requires:
